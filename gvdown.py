@@ -29,8 +29,9 @@ class gui:
 		self.gladefile = "vdown.glade"
 		self.wTree = gtk.glade.XML(self.gladefile)
 		dic = {"mainOK_button_clicked" : self.mainOK_button_clicked,
-				"mainClose_button_clicked" : gtk.main_quit,
-				"info_clicked" : self.info_clicked}
+				"closedSomehow" : gtk.main_quit,
+				"info_clicked" : self.info_clicked,
+				"on_aboutdialog_delete" : self.on_aboutdialog_delete}
 		self.wTree.signal_autoconnect(dic)
 
 		self.window = self.wTree.get_widget("window")
@@ -58,13 +59,17 @@ class gui:
 			file = open("/tmp/vdown.last", "r") # File content = video file
 			savedAs = file.read()
 			file.close()
-			dialog = gtk.MessageDialog(type=gtk.MESSAGE_INFO, message_format="Downloaded video successfully. It was saved as "+savedAs, buttons=gtk.BUTTONS_OK)
+			dialog = gtk.MessageDialog(type=gtk.MESSAGE_INFO, 
+							message_format="Downloaded video successfully. It was saved as \""+savedAs+"\"",
+							buttons=gtk.BUTTONS_OK)
 			dialog.set_title("Downloaded video.")
 			dialog.run()
 			dialog.destroy()
 			self.returnToWindow()
 		else: # Could not download video
-			dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, message_format="The video could not be downloaded. This may be because the link was broken or the video portal is not supported (yet)\n"+"You entered: "+self.entry_content, buttons=gtk.BUTTONS_OK)
+			dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, 
+							message_format="The video could not be downloaded. This may be because the link was broken or the video portal is not supported (yet)\n"+"You entered: \""+self.entry_content+"\"", 
+							buttons=gtk.BUTTONS_OK)
 			dialog.set_title("Could not download video")
 			dialog.run()
 			dialog.destroy()
@@ -73,8 +78,9 @@ class gui:
 			self.entry.set_text("")
 			self.entry.grab_focus()
 	def info_clicked(self, arg2, arg3):
-		self.aboutdialog.run()
-		self.aboutdialog.destroy()
+		self.aboutdialog.show()
+	def on_aboutdialog_delete(self, arg2, arg3 = None):
+		self.aboutdialog.hide()
 if __name__ == "__main__":
    	if len(sys.argv) >= 2:
 		if sys.argv[1] in ("-h", "--help"):
