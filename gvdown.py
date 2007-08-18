@@ -31,7 +31,9 @@ class gui:
 		dic = {"mainOK_button_clicked" : self.mainOK_button_clicked,
 				"closedSomehow" : gtk.main_quit,
 				"info_clicked" : self.info_clicked,
-				"on_aboutdialog_delete" : self.on_aboutdialog_delete}
+				"on_aboutdialog_delete" : self.on_aboutdialog_delete,
+				"open_pressed" : self.open_pressed,
+				"on_chooser_delete" : self.on_chooser_delete}
 		self.wTree.signal_autoconnect(dic)
 
 		self.window = self.wTree.get_widget("window")
@@ -81,6 +83,20 @@ class gui:
 		self.aboutdialog.show()
 	def on_aboutdialog_delete(self, arg2, arg3 = None):
 		self.aboutdialog.hide()
+	def open_pressed(self, arg2, arg3 = None):
+		self.filechooser = gtk.FileChooserDialog(title="Use video list", action=gtk.FILE_CHOOSER_ACTION_SAVE,
+							buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		self.filechooser.set_current_folder(os.path.expanduser("~"))
+		self.filechooser.set_default_response(gtk.RESPONSE_OK)
+		self.filechooser.connect("delete_event", self.on_chooser_delete)
+		self.chooser_response = self.filechooser.run()
+		if self.chooser_response == gtk.RESPONSE_OK:
+			print self.filechooser.get_filename(), 'selected'
+		elif self.chooser_response == gtk.RESPONSE_CANCEL:
+			print 'No file selected.'
+		self.filechooser.destroy()
+	def on_chooser_delete(self, arg2, arg3 = None):
+		self.filechooser.hide()
 if __name__ == "__main__":
    	if len(sys.argv) >= 2:
 		if sys.argv[1] in ("-h", "--help"):
