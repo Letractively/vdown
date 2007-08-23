@@ -900,6 +900,7 @@ Public License instead of this License.  But first, please read
   <widget class="GtkFileChooserDialog" id="filechooserdialog1">
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
+    <signal name="file_activated" handler="on_filechooserdialog1_file_activated"/>
     <signal name="delete_event" handler="on_filechooserdialog1_delete"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
