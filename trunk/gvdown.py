@@ -15,7 +15,7 @@ try:
 	import gtk
 	import gtk.glade
 except:
-	print "GTKv2 needed."
+	print "GTK and GTK.Glade needed."
 	sys.exit(1)
 try:
 	from subprocess import Popen
