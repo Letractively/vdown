@@ -32,7 +32,8 @@ class gui:
 				"closedSomehow" : gtk.main_quit,
 				"info_clicked" : self.info_clicked,
 				"on_aboutdialog_delete" : self.on_aboutdialog_delete,
-				"open_pressed" : self.open_pressed,
+				"on_filechooserdialog1_file_activated" : self.on_filechooserdialog1_file_activated,
+				"open_pressed": self.open_pressed,
 				"on_filechooserdialog1_delete" : self.on_chooser_delete}
 		self.wTree.signal_autoconnect(dic)
 
@@ -84,16 +85,23 @@ class gui:
 		self.aboutdialog.show()
 	def on_aboutdialog_delete(self, arg2, arg3 = None):
 		self.aboutdialog.hide()
-	def open_pressed(self, arg2, arg3 = None):
-		self.filechooser.set_current_folder(os.path.expanduser("~"))
-		self.filechooser.set_default_response(gtk.RESPONSE_OK)
-		self.chooser_response = self.filechooser.run()
-		if self.chooser_response == gtk.RESPONSE_OK:
-			print self.filechooser.get_filename(), 'selected'
-		else:
-			print 'No file selected.'
-		self.filechooser.hide()
-#		self.returnToWindow()
+	
+	def open_pressed(self, *args):
+		self.filechooser.show()
+	#def open_pressed(self, arg2, arg3 = None):
+		#self.filechooser.show()
+		#self.filechooser.set_current_folder(os.path.expanduser("~"))
+		#self.filechooser.set_default_response(gtk.RESPONSE_OK)
+		##self.chooser_response = self.filechooser.run()
+			##if self.chooser_response == gtk.RESPONSE_OK:
+				##print self.filechooser.get_filename(), 'selected'
+			##else:
+				##print 'No file selected.'
+		##self.filechooser.hide()
+##		self.returnToWindow()
+
+	def on_filechooserdialog1_file_activated(self, args):
+		print args		
 	def on_chooser_delete(self, arg2, arg3 = None):
 		self.filechooser.hide()
 if __name__ == "__main__":
