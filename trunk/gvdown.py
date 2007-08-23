@@ -28,7 +28,7 @@ class gui:
 		self.vdown_path = "/usr/bin/vdown"
 		self.gladefile = "vdown.glade"
 		self.wTree = gtk.glade.XML(self.gladefile)
-		dic = {"mainOK_button_clicked" : self.mainOK_button_clicked,
+		dic = {"download_button_clicked" : self.download_button_clicked,
 				"closedSomehow" : gtk.main_quit,
 				"info_clicked" : self.info_clicked,
 				"on_aboutdialog_delete" : self.on_aboutdialog_delete,
@@ -38,16 +38,16 @@ class gui:
 
 		self.window = self.wTree.get_widget("window")
 		self.window.activate_default()
-		self.mainOK_button = self.wTree.get_widget("mainOK_button")
-		self.mainOK_button.set_flags(gtk.CAN_DEFAULT)
-		self.window.set_default(self.mainOK_button)
+		self.download_button = self.wTree.get_widget("download_button")
+		self.download_button.set_flags(gtk.CAN_DEFAULT)
+		self.window.set_default(self.download_button)
 		self.entry = self.wTree.get_widget("entry1")
 		self.entry.set_activates_default(True)
 		self.aboutdialog = self.wTree.get_widget("aboutdialog")
 		self.filechooser = self.wTree.get_widget("filechooserdialog1")
 	def main(self):
 		gtk.main()
-	def mainOK_button_clicked(self, arg2):
+	def download_button_clicked(self, arg2):
 		self.entry_content = self.entry.get_text()
 		self.vdown_command = self.vdown_path," ",self.entry_content
 		if os.path.isfile("/tmp/vdown.last"):
@@ -93,7 +93,7 @@ class gui:
 		else:
 			print 'No file selected.'
 		self.filechooser.hide()
-		self.returnToWindow()
+#		self.returnToWindow()
 	def on_chooser_delete(self, arg2, arg3 = None):
 		self.filechooser.hide()
 if __name__ == "__main__":
