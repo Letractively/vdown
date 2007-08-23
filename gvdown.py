@@ -28,27 +28,26 @@ class gui:
 		self.vdown_path = "/usr/bin/vdown"
 		self.gladefile = "vdown.glade"
 		self.wTree = gtk.glade.XML(self.gladefile)
-		dic = {"download_button_clicked" : self.download_button_clicked,
+		dic = {"mainDownload_button_clicked" : self.mainDownload_button_clicked,
 				"closedSomehow" : gtk.main_quit,
 				"info_clicked" : self.info_clicked,
 				"on_aboutdialog_delete" : self.on_aboutdialog_delete,
-				"on_filechooserdialog1_file_activated" : self.on_filechooserdialog1_file_activated,
 				"open_pressed": self.open_pressed,
-				"on_filechooserdialog1_delete" : self.on_chooser_delete}
+				"on_filechooserdialog_delete" : self.on_chooser_delete}
 		self.wTree.signal_autoconnect(dic)
 
-		self.window = self.wTree.get_widget("window")
-		self.window.activate_default()
-		self.download_button = self.wTree.get_widget("download_button")
-		self.download_button.set_flags(gtk.CAN_DEFAULT)
-		self.window.set_default(self.download_button)
-		self.entry = self.wTree.get_widget("entry1")
+		self.mainWindow = self.wTree.get_widget("mainWindow")
+		self.mainWindow.activate_default()
+		self.mainDownload_button = self.wTree.get_widget("mainDownload_button")
+		self.mainDownload_button.set_flags(gtk.CAN_DEFAULT)
+		self.mainWindow.set_default(self.mainDownload_button)
+		self.entry = self.wTree.get_widget("entry_URL")
 		self.entry.set_activates_default(True)
 		self.aboutdialog = self.wTree.get_widget("aboutdialog")
-		self.filechooser = self.wTree.get_widget("filechooserdialog1")
+		self.filechooser = self.wTree.get_widget("filechooserdialog")
 	def main(self):
 		gtk.main()
-	def download_button_clicked(self, arg2):
+	def mainDownload_button_clicked(self, arg2):
 		self.entry_content = self.entry.get_text()
 		self.vdown_command = self.vdown_path," ",self.entry_content
 		if os.path.isfile("/tmp/vdown.last"):
@@ -69,7 +68,7 @@ class gui:
 			dialog.set_title("Downloaded video.")
 			dialog.run()
 			dialog.destroy()
-			self.returnToWindow()
+			self.returnToMainWindow()
 		else: # Could not download video
 			dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, 
 							message_format="The video could not be downloaded. This may be because the link was broken or the video portal is not supported (yet)\n"+"You entered: \""+self.entry_content+"\"", 
@@ -77,31 +76,23 @@ class gui:
 			dialog.set_title("Could not download video")
 			dialog.run()
 			dialog.destroy()
-			self.returnToWindow()
-	def returnToWindow(self, arg2 = None):
+			self.returnToMainWindow()
+	def returnToMainWindow(self, arg2 = None):
 			self.entry.set_text("")
 			self.entry.grab_focus()
 	def info_clicked(self, arg2, arg3):
 		self.aboutdialog.show()
 	def on_aboutdialog_delete(self, arg2, arg3 = None):
 		self.aboutdialog.hide()
-	
 	def open_pressed(self, *args):
-		self.filechooser.show()
-	#def open_pressed(self, arg2, arg3 = None):
-		#self.filechooser.show()
-		#self.filechooser.set_current_folder(os.path.expanduser("~"))
-		#self.filechooser.set_default_response(gtk.RESPONSE_OK)
-		##self.chooser_response = self.filechooser.run()
-			##if self.chooser_response == gtk.RESPONSE_OK:
-				##print self.filechooser.get_filename(), 'selected'
-			##else:
-				##print 'No file selected.'
-		##self.filechooser.hide()
-##		self.returnToWindow()
-
-	def on_filechooserdialog1_file_activated(self, args):
-		print args		
+		self.filechooser.set_current_folder(os.path.expanduser("~"))
+		self.filechooser.set_default_response(gtk.RESPONSE_OK)
+		self.filechooser_response = self.filechooser.show()
+		if self.filechooser_response == gtk.RESPONSE_OK:
+			print self.filechooser.get_filename(), "selected."
+		else:
+			print "No file selected."	
+		self.filechooser.hide()
 	def on_chooser_delete(self, arg2, arg3 = None):
 		self.filechooser.hide()
 if __name__ == "__main__":
