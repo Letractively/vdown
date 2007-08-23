@@ -2,7 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <!--*- mode: xml -*-->
 <glade-interface>
-  <widget class="GtkWindow" id="window">
+  <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
     <property name="title" translatable="yes">gvdown - VIdeo downloader</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
@@ -11,20 +11,19 @@
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <child>
-          <widget class="GtkMenuBar" id="menubar1">
+          <widget class="GtkMenuBar" id="menubar">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <child>
-              <widget class="GtkMenuItem" id="menuitem1">
+              <widget class="GtkMenuItem" id="menu_FILE">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
                 <child>
-                  <widget class="GtkMenu" id="menu1">
+                  <widget class="GtkMenu" id="menuEntry_OPEN">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <signal name="button_press_event" handler="open_pressed"/>
-                    <signal name="delete_event" handler="returntest"/>
                     <child>
                       <widget class="GtkImageMenuItem" id="imagemenuitem2">
                         <property name="visible">True</property>
@@ -38,12 +37,12 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkMenuItem" id="menuitem2">
+              <widget class="GtkMenuItem" id="menu_HELP">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Hilfe</property>
                 <property name="use_underline">True</property>
                 <child>
-                  <widget class="GtkMenu" id="menu3">
+                  <widget class="GtkMenu" id="menuEntry_HELP">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <signal name="button_press_event" handler="info_clicked"/>
@@ -65,7 +64,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="label">
+          <widget class="GtkLabel" id="label_plsEnterURL">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Enter the URL of the video:</property>
           </widget>
@@ -76,7 +75,7 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="entry1">
+          <widget class="GtkEntry" id="entry_URL">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <signal name="changed" handler="entry_changed"/>
@@ -92,10 +91,10 @@
           <widget class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkButton" id="download_button">
+              <widget class="GtkButton" id="mainDownload_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <signal name="clicked" handler="download_button_clicked"/>
+                <signal name="clicked" handler="mainDownload_button_clicked"/>
                 <child>
                   <widget class="GtkAlignment" id="alignment1">
                     <property name="visible">True</property>
@@ -897,11 +896,10 @@ Public License instead of this License.  But first, please read
       </widget>
     </child>
   </widget>
-  <widget class="GtkFileChooserDialog" id="filechooserdialog1">
+  <widget class="GtkFileChooserDialog" id="filechooserdialog">
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <signal name="file_activated" handler="on_filechooserdialog1_file_activated"/>
-    <signal name="delete_event" handler="on_filechooserdialog1_delete"/>
+    <signal name="delete_event" handler="on_filechooserdialog_delete"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
