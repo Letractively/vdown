@@ -27,12 +27,14 @@ class gui:
 	def __init__(self):
 		self.vdown_path = "/usr/bin/vdown"
 		self.gladefile = "vdown.glade"
+		self.__current_file = None
 		self.wTree = gtk.glade.XML(self.gladefile)
 		dic = {"mainDownload_button_clicked" : self.mainDownload_button_clicked,
 				"closedSomehow" : gtk.main_quit,
 				"info_clicked" : self.info_clicked,
 				"on_aboutdialog_delete" : self.on_aboutdialog_delete,
 				"open_pressed": self.open_pressed,
+				"on_button_open_file_clicked": self.on_button_open_file_clicked,
 				"on_filechooserdialog_delete" : self.on_chooser_delete}
 		self.wTree.signal_autoconnect(dic)
 
@@ -82,17 +84,22 @@ class gui:
 			self.entry.grab_focus()
 	def info_clicked(self, arg2, arg3):
 		self.aboutdialog.show()
-	def on_aboutdialog_delete(self, arg2, arg3 = None):
+		
+	def on_button_open_file_clicked(self, button):
+		self.__current_file = self.filechooser.get_filename()	
+		print "Chose file: %s" % (self.__current_file)
+	def on_aboutdialog_delete(self, arg2, arg3 = None):	
 		self.aboutdialog.hide()
 	def open_pressed(self, *args):
-		self.filechooser.set_current_folder(os.path.expanduser("~"))
-		self.filechooser.set_default_response(gtk.RESPONSE_OK)
-		self.filechooser_response = self.filechooser.show()
-		if self.filechooser_response == gtk.RESPONSE_OK:
-			print self.filechooser.get_filename(), "selected."
-		else:
-			print "No file selected."	
-		self.filechooser.hide()
+		self.filechooser.show()
+		#self.filechooser.set_current_folder(os.path.expanduser("~"))
+		#self.filechooser.set_default_response(gtk.RESPONSE_OK)
+		#self.filechooser_response = self.filechooser.show()
+		#if self.filechooser_response == gtk.RESPONSE_OK:
+	#		print self.filechooser.get_filename(), "selected."
+	#	else:
+	#		print "No file selected."	
+		#self.filechooser.hide()
 	def on_chooser_delete(self, arg2, arg3 = None):
 		self.filechooser.hide()
 if __name__ == "__main__":
