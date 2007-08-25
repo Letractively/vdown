@@ -16,7 +16,7 @@ import xml.parsers.expat
 
 class Controller(object):
     """This is an Hello World GTK application"""
-    def __init__(self, config_file, xml_filename, xml_root, debug=0):
+    def __init__(self, config_file, xml_filename, xml_root=None, debug=0):
         self.__config_file = config_file
         self._config = None
         self.__xml_filename = xml_filename
@@ -40,8 +40,7 @@ class Controller(object):
         else:
             if self._debug:
                 print ("XML file: %s" % (self.__xml_file))
-        setattr(self, self.__xml_root, gtk.glade.XML(self.__xml_file,
-                                                     self.__xml_root))
+        setattr(self, self.__xml_root, gtk.glade.XML(self.__xml_file))
         self.__tree_obj = getattr(self, self.__xml_root)
         self.w_root = self.__tree_obj.get_widget(self.__xml_root)
         if self.w_root is None:
