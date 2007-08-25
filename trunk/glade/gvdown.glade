@@ -4,7 +4,7 @@
 <glade-interface>
   <widget class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
-    <property name="title" translatable="yes">gvdown - VIdeo downloader</property>
+    <property name="title" translatable="yes">gvdown - Video downloader</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <signal name="delete_event" handler="closedSomehow"/>
     <child>
@@ -23,13 +23,13 @@
                   <widget class="GtkMenu" id="menuEntry_OPEN">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <signal name="button_press_event" handler="menu_file_open_clicked"/>
                     <child>
                       <widget class="GtkImageMenuItem" id="menu_file_open">
                         <property name="visible">True</property>
                         <property name="label">gtk-open</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_menu_file_open_activate"/>
                       </widget>
                     </child>
                   </widget>
@@ -45,7 +45,7 @@
                   <widget class="GtkMenu" id="menuEntry_HELP">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <signal name="button_press_event" handler="info_clicked"/>
+                    <signal name="button_press_event" handler="menu_help_info_clicked"/>
                     <child>
                       <widget class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="visible">True</property>
@@ -75,11 +75,9 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkEntry" id="entry_URL">
+          <widget class="GtkEntry" id="entry_url">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="changed" handler="entry_changed"/>
-            <signal name="show" handler="inhalt"/>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -909,17 +907,18 @@ Public License instead of this License.  But first, please read
             <property name="visible">True</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
-              <widget class="GtkButton" id="button1">
+              <widget class="GtkButton" id="fc_button_cancel">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-6</property>
+                <signal name="clicked" handler="on_fc_button_cancel_clicked"/>
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="button_open_file">
+              <widget class="GtkButton" id="fc_button_open_file">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -927,7 +926,7 @@ Public License instead of this License.  But first, please read
                 <property name="label">gtk-open</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-5</property>
-                <signal name="clicked" handler="on_button_open_file_clicked"/>
+                <signal name="clicked" handler="on_fc_button_open_file_clicked"/>
               </widget>
               <packing>
                 <property name="position">1</property>

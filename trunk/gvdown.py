@@ -1,4 +1,10 @@
-import gtk
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+try:
+	import gtk
+except:
+	sys.exit(1)
 import controller
 import gvdown_handler
 
