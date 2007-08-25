@@ -6,8 +6,7 @@ class GUI(controller.Controller):
     """"""
     def __init__(self):
         super(GUI, self).__init__("gvdown_config",
-                                  "gvdown.glade",
-                                  "mainWindow", debug=0)
+                                  "gvdown.glade", "mainWindow", debug=0)
         self.__setup()
 
     def __setup(self):

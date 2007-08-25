@@ -23,13 +23,13 @@
                   <widget class="GtkMenu" id="menuEntry_OPEN">
                     <property name="visible">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <signal name="button_press_event" handler="open_pressed"/>
                     <child>
-                      <widget class="GtkImageMenuItem" id="imagemenuitem2">
+                      <widget class="GtkImageMenuItem" id="menu_file_open">
                         <property name="visible">True</property>
                         <property name="label">gtk-open</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_menu_file_open_activate"/>
                       </widget>
                     </child>
                   </widget>
