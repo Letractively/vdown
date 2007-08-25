@@ -919,7 +919,7 @@ Public License instead of this License.  But first, please read
               </widget>
             </child>
             <child>
-              <widget class="GtkButton" id="button2">
+              <widget class="GtkButton" id="button_open_file">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -927,6 +927,7 @@ Public License instead of this License.  But first, please read
                 <property name="label">gtk-open</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">-5</property>
+                <signal name="clicked" handler="on_button_open_file_clicked"/>
               </widget>
               <packing>
                 <property name="position">1</property>
