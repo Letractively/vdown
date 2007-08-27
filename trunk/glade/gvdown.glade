@@ -78,7 +78,7 @@
           <widget class="GtkEntry" id="entry_url">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="activate" handler="on_entry_url_activate"/>
+            <signal name="activate" handler="download"/>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -93,7 +93,7 @@
               <widget class="GtkButton" id="mainDownload_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <signal name="clicked" handler="mainDownload_button_clicked"/>
+                <signal name="clicked" handler="download"/>
                 <child>
                   <widget class="GtkAlignment" id="alignment1">
                     <property name="visible">True</property>
