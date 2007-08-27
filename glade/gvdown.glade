@@ -78,6 +78,7 @@
           <widget class="GtkEntry" id="entry_url">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <signal name="activate" handler="on_entry_url_activate"/>
           </widget>
           <packing>
             <property name="expand">False</property>

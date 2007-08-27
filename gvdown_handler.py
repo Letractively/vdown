@@ -15,6 +15,9 @@ class GUI_Handler(handler.Handler):
         #mainWindow.set_default(mainDownload_button)
         #entry = self.get_widget("entry_url")
         #entry.set_activates_default(True)
+    def __download(self):
+        print "implement download logic here"
+
     def menu_file_open_clicked(self, widget, event):
         filechooser = self.get_widget(widget, "filechooserdialog")
         filechooser.set_current_folder(os.path.expanduser("~"))
@@ -23,6 +26,11 @@ class GUI_Handler(handler.Handler):
     def menu_help_info_clicked(self, widget, event):
         aboutdialog = self.get_widget(widget, "aboutdialog")
         aboutdialog.show()
+
+    def on_entry_url_editing_done(self, widget):
+        entry_url = self.get_widget(widget, "entry_url")
+        entry_content = entry_url.get_text()
+        self.__download(entry_content)
 
     def fc_button_open_file_clicked(self, widget): # Chose file in filechooserdialog and pressed "Open"
         filechooser = self.get_widget(widget, "filechooserdialog")
@@ -48,6 +56,8 @@ class GUI_Handler(handler.Handler):
     def mainDownload_button_clicked(self, widget):
         entry_url = self.get_widget(widget, "entry_url")
         entry_content = entry_url.get_text()
+        self.__download(entry_content)
+        # move most of the parts below to the __download logic
         vdown_path = "/usr/bin/vdown"
         vdown_command = vdown_path," ",entry_content
         if os.path.isfile("/tmp/vdown.last"):
