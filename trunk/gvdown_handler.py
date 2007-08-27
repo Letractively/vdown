@@ -6,14 +6,14 @@ from subprocess import Popen
 
 class GUI_Handler(handler.Handler):
     def __init__(self):
-        handler.Handler.__init__(self)
+        handler.Handler.__init__(self, "gvdown_config")
         self.__file = None
 
     def download(self, widget):
         entry_url = self.get_widget(widget, "entry_url")
         entry_content = entry_url.get_text()
         # move most of the parts below to the __download logic
-        vdown_path = "/usr/bin/vdown"
+        vdown_path = self.config.get("vdown", "path")
         vdown_command = vdown_path," ",entry_content
         if os.path.isfile("/tmp/vdown.last"):
             os.remove("/tmp/vdown.last")

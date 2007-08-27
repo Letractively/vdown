@@ -1,4 +1,6 @@
 import sys
+import config
+
 try:
     import pygtk
     pygtk.require("2.0")
@@ -11,8 +13,10 @@ except:
     sys.exit(1)
 
 class Handler(object):
-    def __init__(self):
-        pass
+    def __init__(self, config_file=None):
+        if config_file:
+            self.config = config.Config()
+            self.config.read(config_file)
 
     def get_widget(self, current_widget, name):
         xml_glade = gtk.glade.get_widget_tree(current_widget)
