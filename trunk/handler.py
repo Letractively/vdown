@@ -21,5 +21,5 @@ class Handler(object):
 
 if __name__ == "__main__":
     print """
-do not run this file directly
+Do _not_ run this file directly!
     """
