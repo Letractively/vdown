@@ -40,6 +40,7 @@ class GUI_Handler(handler.Handler):
             buttons=gtk.BUTTONS_OK)
             dialog.set_title("Could not download video")
             dialog.run()
+            print dir(dialog)
             dialog.destroy()
         self.returnToMainWindow(self, widget)
 
