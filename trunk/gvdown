@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /usr/lib/python2.5/site-packages/gvdown/
+./gvdown.py
+
+exit 0

@@ -1,5 +1,0 @@
-[glade]
-glade_files = glade/
-
-[vdown]
-path=/usr/bin/vdown

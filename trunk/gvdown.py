@@ -7,11 +7,12 @@ except:
 	sys.exit(1)
 import controller
 import gvdown_handler
+import os
 
 class GUI(controller.Controller):
     """"""
     def __init__(self):
-        super(GUI, self).__init__("gvdown_config",
+        super(GUI, self).__init__("/etc/gvdown.conf",
                                   "gvdown.glade", "mainWindow", debug=0)
         self.__setup()
 

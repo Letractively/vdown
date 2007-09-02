@@ -8,7 +8,7 @@ from gobject import child_watch_add
 
 class GUI_Handler(handler.Handler):
     def __init__(self):
-        handler.Handler.__init__(self, "gvdown_config")
+        handler.Handler.__init__(self, "/etc/gvdown.conf")
         self.__file = None
 
     def download(self, widget):
@@ -24,7 +24,7 @@ class GUI_Handler(handler.Handler):
             process = Popen(vdown_command)
             process.wait()
         except:
-            print "Could not execute ",vdown_path,"! Check the vdown path in gvdown_config."
+            print "Could not execute ",vdown_path,"! Check the vdown path in /etc/gvdown.conf."
             print "Error: ", exc_info()
         if os.path.isfile("/tmp/vdown.last"):
             file = open("/tmp/vdown.last", "r") # File content = video file
