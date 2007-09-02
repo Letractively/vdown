@@ -2,4 +2,4 @@
 glade_files = glade/
 
 [vdown]
-path="/usr/bin/vdown"
+path=/usr/bin/vdown

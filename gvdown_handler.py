@@ -3,6 +3,8 @@ import handler
 import os
 from sys import exc_info
 from subprocess import Popen
+from time import sleep
+from gobject import child_watch_add
 
 class GUI_Handler(handler.Handler):
     def __init__(self):
@@ -15,6 +17,7 @@ class GUI_Handler(handler.Handler):
         # move most of the parts below to the __download logic
         vdown_path = self.config.get("vdown", "path")
         vdown_command = vdown_path," ",entry_content
+        os.chdir(os.path.expanduser("~"))   # Change to Home Directory of the user, where the videos shall be saved 
         if os.path.isfile("/tmp/vdown.last"):
             os.remove("/tmp/vdown.last")
         try:
@@ -40,16 +43,15 @@ class GUI_Handler(handler.Handler):
             buttons=gtk.BUTTONS_OK)
             dialog.set_title("Could not download video")
             dialog.run()
-            print dir(dialog)
             dialog.destroy()
         self.returnToMainWindow(self, widget)
 
-    def menu_file_open_clicked(self, widget, event):
+    def menu_file_open_clicked(self, widget):
         filechooser = self.get_widget(widget, "filechooserdialog")
         filechooser.set_current_folder(os.path.expanduser("~"))
         filechooser.show()
 
-    def menu_help_info_clicked(self, widget, event):
+    def menu_help_info_clicked(self, widget):
         aboutdialog = self.get_widget(widget, "aboutdialog")
         aboutdialog.show()
 
@@ -60,9 +62,64 @@ class GUI_Handler(handler.Handler):
 
     def fc_button_open_file_clicked(self, widget): # Chose file in filechooserdialog and pressed "Open"
         filechooser = self.get_widget(widget, "filechooserdialog")
+        filechooser.hide()
+        vdown_path = self.config.get("vdown", "path")
         self.chosen_file = filechooser.get_filename()
+        videofiles = []
         print "%s selected." % self.chosen_file
         filechooser.hide()
+        print "Downloading a list..."
+        os.chdir(os.path.expanduser("~"))   # Change to Home Directory of the user, where the videos shall be saved 
+        file = open(self.chosen_file, "r")
+        i = 0
+        while 1: 
+            line = file.readline()
+            if not line:
+                break
+            if line[-1] == "\n":
+                line = line[:-1]
+            if os.path.isfile("/tmp/vdown.last"):
+                os.remove("/tmp/vdown.last")
+            print "Trying to download %s..." % line
+            vdown_command = vdown_path," ",line
+            try:
+                process = Popen(vdown_command)
+                process.wait()
+            except:
+                print "Could not execute %s!" % vdown_path
+                print "Exact command: ",vdown_command               
+                print "Error: ",exc_info()
+            if os.path.isfile("/tmp/vdown.last"):
+                last = open("/tmp/vdown.last", "r")
+                videofile = last.read()
+                videofiles.append(videofile)
+                i += 1
+                last.close()
+                print "Downloaded video successfully and saved it as %s" % videofile
+            else:
+                print "Error while downloading file... Trying next line (if any)..."
+        print "=============================="
+        if i >= 1:
+            videofiles_as_list = "\n".join(videofiles)
+            print videofiles
+            print videofiles_as_list
+            print "Downloaded %s files succesfully." % i
+            msg = "Downloaded "+str(i)+" video(s) successfully. Its/Their names: \n"+videofiles_as_list
+            dialog = gtk.MessageDialog(type=gtk.MESSAGE_INFO,
+                                   message_format=msg,
+                                   buttons=gtk.BUTTONS_OK)
+            dialog.set_title("Downloaded videos.")
+            dialog.run()
+            dialog.destroy()
+        else: # NO video downloaded!
+            print "Damn... no video could be downloaded!"
+            dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+                                   message_format="NO video could be downloaded! \nThe list file you specified: "+self.chosen_file,
+                                   buttons=gtk.BUTTONS_OK)
+            dialog.set_title("Could not downloaded videos!")
+            dialog.run()
+            dialog.destroy()
+        file.close()
 
     def fc_button_cancel_clicked(self, widget): # Clicked "Cancel" in filechooser
         filechooser = self.get_widget(widget, "filechooserdialog")
@@ -79,8 +136,6 @@ class GUI_Handler(handler.Handler):
         filechooser = self.get_widget(widget, "filechooserdialog")
         filechooser.hide()
 
-#    def mainDownload_button_clicked(self, widget):
-#        self.__download(widget)
   
     def returnToMainWindow(self, event, widget):
         entry = self.get_widget(widget, "entry_url")        
