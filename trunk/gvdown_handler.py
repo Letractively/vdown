@@ -22,10 +22,13 @@ class GUI_Handler(handler.Handler):
             os.remove("/tmp/vdown.last")
         try:
             process = Popen(vdown_command)
-            process.wait()
         except:
             print "Could not execute ",vdown_path,"! Check the vdown path in /etc/gvdown.conf."
             print "Error: ", exc_info()
+        else:
+            while process.returncode == None:
+                gtk.main_iteration_do(False)
+            gtk.main_iteration_do(True)
         if os.path.isfile("/tmp/vdown.last"):
             file = open("/tmp/vdown.last", "r") # File content = video file
             savedAs = file.read()
@@ -84,11 +87,14 @@ class GUI_Handler(handler.Handler):
             vdown_command = vdown_path," ",line
             try:
                 process = Popen(vdown_command)
-                process.wait()
             except:
                 print "Could not execute %s!" % vdown_path
                 print "Exact command: ",vdown_command               
                 print "Error: ",exc_info()
+            else:
+                while process.returncode == None:
+                    gtk.main_iteration_do(False)
+                gtk.main_iteration_do(True)
             if os.path.isfile("/tmp/vdown.last"):
                 last = open("/tmp/vdown.last", "r")
                 videofile = last.read()
@@ -101,7 +107,6 @@ class GUI_Handler(handler.Handler):
         print "=============================="
         if i >= 1:
             videofiles_as_list = "".join(videofiles)
-            print videofiles
             print videofiles_as_list
             print "Downloaded %s files succesfully." % i
             msg = "Downloaded "+str(i)+" video(s) successfully. Its/Their names: \n"+videofiles_as_list
