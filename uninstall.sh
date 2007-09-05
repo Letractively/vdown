@@ -5,10 +5,12 @@ if [ ! "$UID" -eq 0 ]; then
 fi
 
 rm /usr/bin/vdown
-rm -rf /usr/lib/python2.5/site-packages/gvdown/glade
+rm -rf /usr/lib/python2.5/site-packages/gvdown
 rm /etc/gvdown.conf
 rm /usr/share/man/man1/vdown.1
 rm /usr/bin/gvdown
+rm /usr/share/applications/gvdown.desktop
+rm /usr/share/pixmaps/gvdown.xpm
 
 echo "Removed gvdown successfully."
 exit 0
