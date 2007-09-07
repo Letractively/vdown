@@ -1,4 +1,5 @@
 import os
+import sys
 import ConfigParser
 
 class Config(ConfigParser.SafeConfigParser):
