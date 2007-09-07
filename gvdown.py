@@ -13,7 +13,7 @@ class GUI(controller.Controller):
     """"""
     def __init__(self):
         super(GUI, self).__init__("/etc/gvdown.conf",
-                                  "gvdown.glade", "mainWindow", debug=0)
+                                  "gvdown.glade", "mainWindow", debug=1)
         self.__setup()
 
     def __setup(self):
