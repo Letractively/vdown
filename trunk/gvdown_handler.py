@@ -18,6 +18,7 @@ class GUI_Handler(handler.Handler):
         vdown_path = self.config.get("vdown", "path")
         vdown_command = vdown_path," ",entry_content
         os.chdir(os.path.expanduser("~"))   # Change to Home Directory of the user, where the videos shall be saved 
+        gtk.main_iteration_do(False)
         if os.path.isfile("/tmp/vdown.last"):
             os.remove("/tmp/vdown.last")
         try:
@@ -26,10 +27,12 @@ class GUI_Handler(handler.Handler):
             print "Could not execute ",vdown_path,"! Check the vdown path in /etc/gvdown.conf."
             print "Error: ", exc_info()
         else:
-            while process.returncode == None:
-                gtk.main_iteration_do(False)
+            process.wait()
+            print process.returncode
             gtk.main_iteration_do(True)
         if os.path.isfile("/tmp/vdown.last"):
+            if self._debug:
+                print "download successfull..."
             file = open("/tmp/vdown.last", "r") # File content = video file
             savedAs = file.read()
             file.close()
@@ -38,16 +41,23 @@ class GUI_Handler(handler.Handler):
                                    message_format="Downloaded video successfully. It was saved as \""+savedAs+"\"",
                                    buttons=gtk.BUTTONS_OK)
             dialog.set_title("Downloaded video.")
-            dialog.run()
-            dialog.destroy()
+            response = dialog.run()
+            if response == -5:
+                if self._debug:
+                    print "download successfully. destroy window"
+                dialog.destroy()
         else: # Could not download video
+            if self._debug:
+                print "could not download video"
             dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
             message_format="The video could not be downloaded. This may be because the link was broken or the video portal is not supported (yet)\n"+"You entered: \""+entry_content+"\"",
             buttons=gtk.BUTTONS_OK)
             dialog.set_title("Could not download video")
-            dialog.run()
-            dialog.destroy()
-        self.returnToMainWindow(self, widget)
+            response = dialog.run()
+            if response == -5:
+                dialog.destroy()
+        entry_url.set_text("")
+        entry_url.grab_focus()
 
     def menu_file_open_clicked(self, widget):
         filechooser = self.get_widget(widget, "filechooserdialog")
@@ -140,12 +150,6 @@ class GUI_Handler(handler.Handler):
     def on_filechooserdialog_delete(self, widget):
         filechooser = self.get_widget(widget, "filechooserdialog")
         filechooser.hide()
-
-  
-    def returnToMainWindow(self, event, widget):
-        entry = self.get_widget(widget, "entry_url")        
-        entry.set_text("")
-        entry.grab_focus()
 
 if __name__ == "__main__":
     print """
