@@ -1,3 +1,0 @@
-#!/bin/sh
-rm -rf »/usr/lib/python2.5/site-packages/gvdown # Clean system...
-echo "Removed folder with python files successfully."
