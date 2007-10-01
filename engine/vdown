@@ -1,0 +1,67 @@
+#!/bin/bash
+#***************************************************************************\
+#*   Copyright (C) 2007 by Nicolai Spohrer,                                *
+#*   nicolai@xeve.de              					   *
+#*                                                                         *
+#*   This program is free software; you can redistribute it and/or modify  *
+#*   it under the terms of the GNU General Public License as published by  *
+#*   the Free Software Foundation; either version 3 of the License, or     *
+#*   (at your option) any later version.                                   *
+#*                                                                         *
+#*   This program is distributed in the hope that it will be useful,       *
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+#*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+#*   GNU General Public License for more details.                          *
+#*                                                                         *
+#*   You should have received a copy of the GNU General Public License     *
+#*   along with this program; if not, see                                  *
+#*   <http://www.gnu.org/licenses/gpl.html> or write to the                *
+#*   Free Software Foundation, Inc.,                                       *
+#*   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+#***************************************************************************
+# Scriptname : vdown                                                       *
+# Description: Downloads videos from video sharing websites like YouTube,  *
+#       Myspace Video, Google Video, Clipfish and so on.                   *
+# This script uses <videograb.de>                                          *
+# The video will be saved as FLV file.                                     *
+#***************************************************************************/
+SELF=$(cd $(dirname $0); pwd -P)/$(basename $0)
+case "$1" in
+"")
+ echo "USAGE: "$SELF" URL [ URL2 URL3 ...]"
+ ;;
+esac
+
+for i in $@; do
+# If vgfile1.txt already exists, back it up
+mv vgfile1.txt vgfile1.txt.backup > /dev/null 2>&1
+echo "Downloading video file with wget, saving it in "$(pwd)
+SITELINK="http://videograb.de/cgi-bin/video.cgi?url="$i
+# Downloading information for download link and name from videograb.de
+wget $SITELINK -O"vgfile1.txt" --quiet
+WANTEDLINE=$(awk '/>Download von /' vgfile1.txt)
+rm vgfile1.txt
+# Move (maybe) backed-up file back
+mv vgfile1.txt.backup vgfile1.txt > /dev/null 2>&1
+if [ ! -n "$WANTEDLINE" ]; then
+  echo "Link broken or video portal not supported"
+  exit 2
+fi
+# Strip the grepped line from all information except the download link
+WANTEDLINK=$(echo $WANTEDLINE | awk ' { print $2 } ' | sed 's/href\=//g;s/\"//g;s/>Download$//g')
+# Check what the name of the video is
+WANTEDNAME1=$(echo $WANTEDLINE | sed "s#$WANTEDLINK##g")
+WANTEDNAME2=${WANTEDNAME1::24}
+WANTEDNAME3=$(echo $WANTEDNAME1 | sed "s/$WANTEDNAME2//g;s/<\/a>\://g;s/<br>//g")
+VIDEOPORTAL=$(echo $WANTEDNAME3 | awk ' { print $1 } ')
+WANTEDNAME4=$(echo $WANTEDNAME3 | sed "s/$VIDEOPORTAL //g")
+# Add .flv if it does not already exist
+WANTEDNAME=$(echo $WANTEDNAME4".flv" | sed 's/\.flv\.flv/\.flv/gi')
+# Strip name for conversion
+CONVNAME=$(echo $WANTEDNAME | sed 's/\.flv$/\.mpg/g')
+# Download the video
+wget $WANTEDLINK -O"$WANTEDNAME"
+echo 'Download finished.'
+echo $(pwd)"/"$WANTEDNAME > /tmp/vdown.last
+done
+exit 0
