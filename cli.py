@@ -51,26 +51,26 @@ for i in sys.argv:
 			print "Filesize: ",filesize,"KB"
 			while True:
 				progress_dif = progress-last_progress
-				kb_per_sec = filesize*(progress_dif/1000)
+				kb_per_sec = filesize*(progress_dif/100)
+				downloaded_kb = (progress/100)*filesize
+				left_kb = filesize-downloaded_kb
 				progress_2dec = round(progress, 2) # only 2 decimal places!
-				downloaded_kb = (progress_2dec/100)*filesize
 				if kb_per_sec < 1:
 					ETA = "?"
 				else:
-					left_kb = filesize-downloaded_kb
 					ETA = round(left_kb/kb_per_sec, 2)
-				sys.stdout.write("\r%s percent downloaded | %s KB/s | ETA: %ss  " % (progress_2dec, (round(kb_per_sec, 2)), ETA))
+				sys.stdout.write("\r%s percent downloaded | %s KB/s | ETA: %ss         " % (progress_2dec, (round(kb_per_sec, 2)), ETA))
 				sys.stdout.flush()
+				last_progress = progress
 				time.sleep(1)
 				progress = down.downloaded()
 				if(progress == 100.0):
-					sys.stdout.write("\rDownload finished! Trying next (if any)...\n")
+					sys.stdout.write("\rDownload finished! Trying next (if any)...               \n")
 					sys.stdout.flush()
 					break
 		except KeyboardInterrupt:
 			print "\nKilled by STRG+C, quitting..."
 			sys.exit(1)
+		except Exception:
+			print "\nCould not find out video download link! Trying next (if any)..."
 		print "---"
-			
-#		except:
-#			print "An error has occurred. Trying next (if any)..."
