@@ -29,6 +29,7 @@
 #***************************************************************************/
 
 import sys, httplib, re
+
 def get_data(url):
 	SITE="www.videograb.de"
 	FILENAME="/cgi-bin/video.cgi?url="+url
@@ -42,7 +43,7 @@ def get_data(url):
 		WANTEDLINE=[ l for l in con_vg_data.splitlines() if ">Download von " in l][0] # echo "rabfoo \nfoobar" | grep bar
 	except IndexError:
 		print "Could not grep the wanted line! Wrong URL or unsupported video portal!"
-		raise sys.exit(1)
+		raise Exception, "Could not grep the wanted line!"
 	else:
 		WANTEDLINK=re.sub(">Download$", "", re.sub("\"", "", re.sub("href\=", "", re.split(" ", WANTEDLINE)[1])))
 		WANTEDNAME=re.sub("<br>$", "", re.split("</a>: ", WANTEDLINE)[1])
