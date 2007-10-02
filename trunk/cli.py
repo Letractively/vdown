@@ -46,31 +46,35 @@ for i in sys.argv:
 			down.start()
 			progress = down.downloaded()
 			last_progress = progress
+			last_ETA = 0.00
 			sleep(1) # give "it" some time to get the filesize, otherwise it'd be just '100'
 			filesize = down.get_filesize()
+			while filesize == 0: # if it was not enough
+				sleep(1)
+				filesize = down.get_filesize()
 			print "Filesize: ",filesize,"KB"
 			while True:
 				progress_dif = progress-last_progress
 				kb_per_sec = filesize*(progress_dif/100)
 				downloaded_kb = (progress/100)*filesize
 				left_kb = filesize-downloaded_kb
-				progress_2dec = round(progress, 2) # only 2 decimal places!
 				if kb_per_sec < 1:
-					ETA = "?"
+					if last_ETA == 0.00:
+						ETA = "?"
 				else:
-					ETA = round(left_kb/kb_per_sec, 2)
-				sys.stdout.write("\r%s percent downloaded | %s KB/s | ETA: %ss         " % (progress_2dec, (round(kb_per_sec, 2)), ETA))
+					ETA = "%.2f" % (left_kb/kb_per_sec) # may be inexact!
+					last_ETA = ETA # if kb_per_sec is 0 and something was already downloaded, print the last ETA
+				sys.stdout.write("\r%.2f percent downloaded | %.2f KB/s | ETA: %ss         " % (float(progress), float(kb_per_sec), ETA))
 				sys.stdout.flush()
 				last_progress = progress
-				time.sleep(1)
+				sleep(1)
 				progress = down.downloaded()
 				if(progress == 100.0):
 					sys.stdout.write("\rDownload finished! Trying next (if any)...               \n")
-					sys.stdout.flush()
 					break
 		except KeyboardInterrupt:
 			print "\nKilled by STRG+C, quitting..."
 			sys.exit(1)
-		except Exception:
-			print "\nCould not find out video download link! Trying next (if any)..."
+#		except Exception:
+#			print "\nCould not find out video download link! Trying next (if any)..."
 		print "---"

@@ -59,5 +59,5 @@ if __name__ == "__main__":
 				data = get_data(i)
 				print "Download link : "+data[0]
 				print "Video name: "+data[1]
-			except:
+			except Exception:
 				print "Could not get infos, trying next URL (if any)..."
