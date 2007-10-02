@@ -58,19 +58,20 @@ for i in sys.argv:
 				kb_per_sec = filesize*(progress_dif/100)
 				downloaded_kb = (progress/100)*filesize
 				left_kb = filesize-downloaded_kb
+				kb_per_sec_asfloat = "%.2f" % (float(kb_per_sec))
 				if kb_per_sec < 1:
 					if last_ETA == 0.00:
 						ETA = "?"
 				else:
 					ETA = "%.2f" % (left_kb/kb_per_sec) # may be inexact!
 					last_ETA = ETA # if kb_per_sec is 0 and something was already downloaded, print the last ETA
-				sys.stdout.write("\r%.2f percent downloaded | %.2f KB/s | ETA: %ss         " % (float(progress), float(kb_per_sec), ETA))
+				sys.stdout.write("\r%.2f \033[6G percent downloaded | %s \033[35G KB/s | ETA: %s \033[55Gseconds" % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA)) # makes it look more static
 				sys.stdout.flush()
 				last_progress = progress
 				sleep(1)
 				progress = down.downloaded()
 				if(progress == 100.0):
-					sys.stdout.write("\rDownload finished! Trying next (if any)...               \n")
+					sys.stdout.write("\rDownload finished! Trying next (if any)...                      \n")
 					break
 		except KeyboardInterrupt:
 			print "\nKilled by STRG+C, quitting..."
