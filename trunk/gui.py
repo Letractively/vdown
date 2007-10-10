@@ -36,31 +36,31 @@ class gui:
 		entry_url = self.wTree.get_widget("entry_url")
 		pb = self.wTree.get_widget("dprogressbar")
 		url = entry_url.get_text()
+		pb.set_fraction(0)
+		pb.set_text("Fetching video information...")
 		if url == "":
-			dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
-							message_format = "No URL specified!",
-							buttons=gtk.BUTTONS_OK)
-			dialog.set_title("No URL")
-			dialog.run()
-			dialog.destroy()
+			pb.set_text("No URL specified")
 		else:
-			pb.set_text("Fetching video information...")
 			print "Trying to download %s" % (url)
 			data = get_data(url)
 			print "Saving file as \"%s\"..." % (data[2])
 			down = fdownload(data[0], data[2])
 			down.start()
+			pb.set_fraction(0)
 			pb.set_text("Downloading video...")
 			progress = down.downloaded()/100
 			while down.get_filesize() == 0:
 				gtk.main_iteration_do(False)
+				sleep(0.01)
 			gtk.main_iteration_do(True)
 			filesize = down.get_filesize()
 			print "Filesize: %s KB" % (filesize)
 			while progress < 1:
 				gtk.main_iteration_do(False)
+				sleep(0.01)
 				pb.set_fraction(progress)
 				progress = down.downloaded()/100
+			pb.set_fraction(1)
 			gtk.main_iteration_do(True)
 			pb.set_text("Download finished.")
 		
