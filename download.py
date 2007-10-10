@@ -56,3 +56,7 @@ class fdownload(threading.Thread):
 	def get_filesize(self):
 		return int(self.content_len)/1024
 
+	def get_progress(self):
+		time.sleep(0.2)
+		return self.downloaded
+
