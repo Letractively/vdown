@@ -56,7 +56,8 @@ class gui:
 			"download_single" : self.download_single,
 			"menu_help_info_clicked" : self.menu_help_info_clicked,
 			"on_aboutdialog_delete" : self.on_aboutdialog_delete,
-			"menu_file_open_clicked" : self.menu_file_open_clicked}
+			"menu_file_open_clicked" : self.menu_file_open_clicked,
+			"fc_open_file_clicked" : self.download_list}
 		self.wTree.signal_autoconnect(dic)
 		self.wTree.get_widget("dprogressbar").set_text("Nothing to do")
 
@@ -122,8 +123,62 @@ class gui:
 		fc.set_current_folder(os.path.expanduser("~"))
 		fc.show()
 
-	def fc_open_file_clicked(self, widget): # Clicked on button 'open' in filechooserdialog
-		print "doesnt do anything yet"
+	def download_list(self, widget): # Clicked on button 'open' in filechooserdialog
+		fc = self.wTree.get_widget("filechooserdialog")
+		pb = self.wTree.get_widget("dprogressbar")
+		fc.hide()
+		pb.set_fraction(0)
+		chosen_list = fc.get_filename()
+		print "%s selected" % (chosen_list)
+		print "-----"
+		pb.set_text("Downloading a list...")
+		file = open(chosen_list, "r")
+		i = 0
+		successful = 0 # videos downloaded successfully
+		while True:
+			pb.set_fraction(0)
+			pb.set_text("Fetching video information...")
+			line = file.readline()
+			if not line:
+				break
+			if line[-1] == "\n":
+				line = line[:-1]
+			print "----"
+			print "Trying to download %s" % (line)
+			data = get_data(line)
+			data.start()
+			while data.status == -1:
+				gtk.main_iteration_do(False)
+				sleep(0.01)
+			gtk.main_iteration_do(True)
+			if data.status == 0:
+				print "Saving file as \"%s\"..." % (data.data[2])
+				down = fdownload(data.data[0], data.data[2])
+				down.start()
+				pb.set_text("Downloading video #%s" % (i+1))
+				progress = down.downloaded()/100
+				while down.get_filesize() == 0:
+					gtk.main_iteration_do(False)
+					sleep(0.01)
+				gtk.main_iteration_do(True)
+				filesize = down.get_filesize()
+				print "Filesize: %s KB" % (filesize)
+				while progress < 1:
+					gtk.main_iteration_do(False)
+					sleep(0.005)
+					pb.set_fraction(progress)
+					progress = down.downloaded()/100
+				gtk.main_iteration_do(True)				
+				pb.set_fraction(1)
+				pb.set_text("Finished download #%s" % (i+1))
+				successful += 1
+			else:
+				print "Wrong URL / unsupported video portal"
+				pb.set_text("Download #%s failed" % (i+1))
+			i += 1
+			print "----"
+		pb.set_text("%s of %s successfully" % (successful, i))
+		print "-----"
 
 if __name__ == "__main__":
 	try:
