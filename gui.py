@@ -87,6 +87,9 @@ class gui:
 			except OSError:
 				print "Could not create the directory where the videos shall be saved in (specified in ~/.gvdownrc)! Check the permissions."
 				sys.exit(1)
+		if not folder_is_writable(self.save_videos_in):
+			print "Cannot write to video output directoy! Check permissions or change the directory in ~/.gvdownrc"
+			sys.exit(1)
 
 	def closedSomehow(self, widget, event = None):
 		gtk.main_quit()
@@ -252,10 +255,13 @@ class gui:
 		sfcb = self.wTree.get_widget("sfcb")
 		swindow = self.wTree.get_widget("settingswindow")
 		self.save_videos_in = sfcb.get_filename()
-		cfile_andwrite = open(self.configfile, "wb")
-		cfile_andwrite.write("save_videos_in="+self.save_videos_in)
-		cfile_andwrite.close()
-		swindow.hide()
+		if not folder_is_writable(self.save_videos_in):
+			print "Cannot write to video output folder. Choose another."
+		else:
+			cfile_andwrite = open(self.configfile, "wb")
+			cfile_andwrite.write("save_videos_in="+self.save_videos_in)
+			cfile_andwrite.close()
+			swindow.hide()
 
 ##
 

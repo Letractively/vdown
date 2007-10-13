@@ -28,7 +28,7 @@
 # The video will be saved as FLV file.                                     *
 #***************************************************************************/
 
-import sys, httplib, re, urllib2, threading, time
+import os, sys, httplib, re, urllib2, threading, time
 
 
 class fdownload(threading.Thread): # not used in this file, but by the other interfaces
@@ -81,12 +81,19 @@ class get_data(threading.Thread):
 			self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME]
 
 def folder_is_writable(dir):
+	if os.path.isfile(dir+"/vdown_test.testfile"): # do not delete the test file if it exists
+		EXISTS = True
+	else:
+		EXISTS = False
+
 	try:
 		file = open(dir+"/vdown_test.testfile", "wb")
 		file.close()
 	except IOError:
 		return False
 	else:
+		if not EXISTS:
+			os.remove(dir+"/vdown_test.testfile")
 		return True
 
 if __name__ == "__main__":
