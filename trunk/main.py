@@ -80,6 +80,15 @@ class get_data(threading.Thread):
 			self.status = 0
 			self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME]
 
+def folder_is_writable(dir):
+	try:
+		file = open(dir+"/vdown_test.testfile", "wb")
+		file.close()
+	except IOError:
+		return False
+	else:
+		return True
+
 if __name__ == "__main__":
 	for i in sys.argv:
 		if i != sys.argv[0]:
