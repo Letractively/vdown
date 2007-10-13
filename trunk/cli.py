@@ -29,13 +29,23 @@
 #***************************************************************************/
 
 from main import get_data
-import sys, time
-import download
+from main import fdownload
+from main import folder_is_writable
+import os, sys, time
 import re
 from time import sleep
 
+if os.path.isdir(sys.argv[1]):
+	save_videos_in = sys.argv[1]
+else:
+	save_videos_in = "."
+
+if not folder_is_writable(save_videos_in):
+	print "Can't write to this directory! Change to another."
+	sys.exit(1)
+
 for i in sys.argv:
-	if i != sys.argv[0]:
+	if i != sys.argv[0] and i != save_videos_in:
 		print "----"
 		print "Trying to download the video..."
 		print "URL: "+i
@@ -46,7 +56,7 @@ for i in sys.argv:
 				time.sleep(0.02)
 			if data.status == 0:
 				print "Saving file as \"%s\"..." % (data.data[2])
-				down = download.fdownload(data.data[0], data.data[2])
+				down = fdownload(data.data[0], save_videos_in+"/"+data.data[2])
 				down.start()
 				progress = down.downloaded()
 				last_progress = progress
