@@ -21,14 +21,14 @@
 #*   Free Software Foundation, Inc.,                                       *
 #*   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 #***************************************************************************
-# Filename   : mgui.py                                                     *
+# Filename   : gui.py                                                      *
 # Description: Downloads videos from video sharing websites like YouTube,  *
 #       Myspace Video, Google Video, Clipfish and so on.                   *
 # This application uses <videograb.de>                                     *
 # The video will be saved as FLV file.                                     *
 #***************************************************************************/
 
-import os, sys
+import os, sys, re
 
 try:
 	import pygtk
@@ -46,6 +46,7 @@ except:
 from time import sleep
 from main import get_data
 from main import fdownload
+from main import folder_is_writable
 
 gladefile = "gvdown.glade"
 
@@ -57,9 +58,35 @@ class gui:
 			"menu_help_info_clicked" : self.menu_help_info_clicked,
 			"on_aboutdialog_delete" : self.on_aboutdialog_delete,
 			"menu_file_open_clicked" : self.menu_file_open_clicked,
-			"fc_open_file_clicked" : self.download_list}
+			"fc_open_file_clicked" : self.download_list,
+			"fc_cancel_clicked" : self.fc_cancel_clicked,
+			"on_filechooserdialog_delete" : self.on_filechooserdialog_delete,
+			"menu_file_settings_clicked" : self.menu_file_settings_clicked,
+			"on_swindow_delete" : self.on_swindow_delete,
+			"swindow_close_clicked" : self.swindow_close_clicked}
 		self.wTree.signal_autoconnect(dic)
-		self.wTree.get_widget("dprogressbar").set_text("Nothing to do")
+
+		self.homedir = os.path.expanduser("~")
+		self.configfile = self.homedir+"/.gvdownrc"
+
+		if not os.path.isfile(self.configfile):
+			cfile_andwrite = open(self.configfile, "wb")
+			cfile_andwrite.write("save_videos_in="+self.homedir+"/videos")
+			cfile_andwrite.close()
+		cfile = open(self.configfile, "r")
+		cline = cfile.readline()
+		cfile.close()
+		try:
+			self.save_videos_in = re.sub("\n", "", re.split("=", cline)[1])
+		except IndexError:
+			print "Invalid config file! Must be like foo=bar"
+			sys.exit(1)
+		if not os.path.isdir(self.save_videos_in):
+			try:
+				os.mkdir(self.save_videos_in)
+			except OSError:
+				print "Could not create the directory where the videos shall be saved in (specified in ~/.gvdownrc)! Check the permissions."
+				sys.exit(1)
 
 	def closedSomehow(self, widget, event = None):
 		gtk.main_quit()
@@ -67,7 +94,10 @@ class gui:
 	def download_single(self, widget, event = None):
 		entry_url = self.wTree.get_widget("entry_url")
 		pb = self.wTree.get_widget("dprogressbar")
+		mainDownload_button = self.wTree.get_widget("mainDownload_button")
+		mainClose_button = self.wTree.get_widget("mainClose_button")
 		url = entry_url.get_text()
+		os.chdir(self.save_videos_in)
 		pb.set_fraction(0)
 		pb.set_text("Fetching video information...")
 		if url == "":
@@ -76,6 +106,8 @@ class gui:
 			print "----"
 			print "Trying to download %s" % (url)
 			pb.set_fraction(0)
+			mainDownload_button.set_sensitive(False)
+			mainClose_button.set_sensitive(False)
 			data = get_data(url)
 			data.start()
 			while data.status == -1:
@@ -83,7 +115,7 @@ class gui:
 				sleep(0.01)
 			gtk.main_iteration_do(True)
 			if data.status == 0:
-				print "Saving file as \"%s\"..." % (data.data[2])
+				print "Saving file as \"%s\"..." % (self.save_videos_in+"/"+data.data[2])
 				down = fdownload(data.data[0], data.data[2])
 				down.start()
 				pb.set_fraction(0)
@@ -105,9 +137,12 @@ class gui:
 				pb.set_text("Download finished.")
 			else:
 				pb.set_text("Wrong URL / unsupported video portal")
+			mainDownload_button.set_sensitive(True)
+			mainClose_button.set_sensitive(True)
 			print "----"
 
 ##
+
 	def menu_help_info_clicked(self, widget, event = None):
 		aboutdialog = self.wTree.get_widget("aboutdialog")
 		aboutdialog.show()
@@ -116,21 +151,37 @@ class gui:
 		aboutdialog = self.wTree.get_widget("aboutdialog")
 		aboutdialog.hide()
 		return True
+
 ##
 
 	def menu_file_open_clicked(self, widget):
 		fc = self.wTree.get_widget("filechooserdialog")
-		fc.set_current_folder(os.path.expanduser("~"))
+		fc.set_current_folder(self.homedir)
 		fc.show()
+
+	def on_filechooserdialog_delete(self, widget, event):
+		print "fcdelete"
+		fc = self.wTree.get_widget("filechooserdialog")
+		fc.hide()
+		return True
+
+	def fc_cancel_clicked(self, widget): # Clicked on button 'cancel' in filechooserdialog
+		fc = self.wTree.get_widget("filechooserdialog")
+		fc.hide()
 
 	def download_list(self, widget): # Clicked on button 'open' in filechooserdialog
 		fc = self.wTree.get_widget("filechooserdialog")
 		pb = self.wTree.get_widget("dprogressbar")
+		mainDownload_button = self.wTree.get_widget("mainDownload_button")
+		mainClose_button = self.wTree.get_widget("mainClose_button")
+		os.chdir(self.save_videos_in)
 		fc.hide()
 		pb.set_fraction(0)
 		chosen_list = fc.get_filename()
 		print "%s selected" % (chosen_list)
 		print "-----"
+		mainDownload_button.set_sensitive(False)
+		mainClose_button.set_sensitive(False)
 		pb.set_text("Downloading a list...")
 		file = open(chosen_list, "r")
 		i = 0
@@ -152,7 +203,7 @@ class gui:
 				sleep(0.01)
 			gtk.main_iteration_do(True)
 			if data.status == 0:
-				print "Saving file as \"%s\"..." % (data.data[2])
+				print "Saving file as \"%s\"..." % (self.save_videos_in+"/"+data.data[2])
 				down = fdownload(data.data[0], data.data[2])
 				down.start()
 				pb.set_text("Downloading video #%s" % (i+1))
@@ -177,8 +228,36 @@ class gui:
 				pb.set_text("Download #%s failed" % (i+1))
 			i += 1
 			print "----"
-		pb.set_text("%s of %s successfully" % (successful, i))
+		pb.set_text("%s of %s successful" % (successful, i))
+		mainDownload_button.set_sensitive(True)
+		mainClose_button.set_sensitive(True)
 		print "-----"
+
+##
+
+	def menu_file_settings_clicked(self, widget):
+		swindow = self.wTree.get_widget("settingswindow")
+		sfcb = self.wTree.get_widget("sfcb") # settings filechooser button
+		sfcb.set_local_only(True)
+		sfcb.set_show_hidden(False)
+		sfcb.set_current_folder(self.save_videos_in)
+		swindow.show()
+
+	def on_swindow_delete(self, widget, event):
+		swindow = self.wTree.get_widget("settingswindow")
+		swindow.hide()
+		return True
+
+	def swindow_close_clicked(self, widget):
+		sfcb = self.wTree.get_widget("sfcb")
+		swindow = self.wTree.get_widget("settingswindow")
+		self.save_videos_in = sfcb.get_filename()
+		cfile_andwrite = open(self.configfile, "wb")
+		cfile_andwrite.write("save_videos_in="+self.save_videos_in)
+		cfile_andwrite.close()
+		swindow.hide()
+
+##
 
 if __name__ == "__main__":
 	try:
