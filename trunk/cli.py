@@ -36,24 +36,24 @@ import os, sys, time
 import re
 from time import sleep
 import ConfigParser
-
-to_avi_with_ffmpeg = True
+from gettext import gettext as _
 
 try:
 	if os.path.isdir(sys.argv[1]):
 		save_videos_in = sys.argv[1]
 	else:
 		save_videos_in = "."
+
 except IndexError:
-	print "Please specify at least one parameter."
-	print "Examples: "
-	print sys.argv[0]+" /home/testuser/videos URL1 [URL2 ...]"
-	print "or"
-	print sys.argv[0]+" URL1 [URL2 ...]"
+	print _("Please specify at least one parameter.")
+	print _("Examples: ")
+	print sys.argv[0]+_(" /home/testuser/videos URL1 [URL2 ...]")
+	print _("or")
+	print sys.argv[0]+_(" URL1 [URL2 ...]")
 	sys.exit(1)
 
 if not folder_is_writable(save_videos_in):
-	print "Can't write to this directory! Change to another."
+	print _("Can't write to this directory! Change to another.")
 	sys.exit(1)
 
 homedir = os.path.expanduser("~")
@@ -93,15 +93,15 @@ except ConfigParser.NoSectionError: # if not all settings are set, set all setti
 for i in sys.argv:
 	if i != sys.argv[0] and i != save_videos_in:
 		print "----"
-		print "Trying to download the video..."
-		print "URL: "+i
+		print _("Trying to download the video...")
+		print _("URL: ")+i
 		try: 
 			data = get_data(i)
 			data.start()
 			while data.status == -1:
 				time.sleep(0.02)
 			if data.status == 0:
-				print "Saving file as \"%s\"..." % (data.data[2])
+				print _("Saving file as \"%s\"...") % (data.data[2])
 				down = fdownload(data.data[0], save_videos_in+"/"+data.data[2])
 				down.start()
 				progress = down.downloaded()
@@ -112,7 +112,7 @@ for i in sys.argv:
 				while filesize == 0: # if it was not enough
 					sleep(1)
 					filesize = down.get_filesize()
-				print "Filesize: ",filesize,"KB"
+				print _("Filesize: "),filesize,"KB"
 				while True:
 					progress_dif = progress-last_progress
 					kb_per_sec = filesize*(progress_dif/100)
@@ -125,27 +125,27 @@ for i in sys.argv:
 					else:
 						ETA = "%.2f" % (left_kb/kb_per_sec) # may be inexact!
 						last_ETA = ETA # if kb_per_sec is 0 and something was already downloaded, print the last ETA
-					sys.stdout.write("\r%.2f \033[6G percent downloaded | %s \033[35G KB/s | ETA: %s \033[55Gseconds" % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA)) # makes it look more static
+					sys.stdout.write(_("\r%.2f \033[6G percent downloaded | %s \033[35G KB/s | ETA: %s \033[55Gseconds") % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA)) # makes it look more static
 					sys.stdout.flush()
 					last_progress = progress
 					sleep(1)
 					progress = down.downloaded()
 					if(progress == 100.0):
-						sys.stdout.write("\rDownload finished...                                   \n")
+						sys.stdout.write(_("\rDownload finished...                                                      \n"))
 						if convert:
-							print "Converting file"
+							print _("Converting file...")
 							output = fconvert(save_videos_in+"/"+data.data[2], convert_filename_extension, convertcmd)
 							output.start()
 							while output.status == -1:
 								sleep(0.2)
-							print "Converted file."
+							print _("Converted file.")
 							if deletesourcefile:
 								os.remove(save_videos_in+"/"+data.data[2])
-								print "Deleted input (.flv) file"
+								print _("Deleted input (.flv) file")
 						break
 			else:
-				print "Could not fetch the wanted line. Wrong URL or unsupported video portal! But better try again."
+				print _("Could not fetch the wanted line. Wrong URL or unsupported video portal! But better try again.")
 		except KeyboardInterrupt:
-			print "\nKilled by STRG+C, quitting..."
+			print _("\nKilled by STRG+C, quitting...")
 			sys.exit(1)
 		print "----"

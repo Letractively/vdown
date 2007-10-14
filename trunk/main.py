@@ -62,9 +62,15 @@ class convert(threading.Thread):
 		self.filename_extension = filename_extension
 		self.command = command
 	def run(self):
+		self.input = re.sub(" ", "-spacechar-filename-", self.input)
+		self.output = re.sub(".flv$", self.filename_extension, self.input)
+		self.output = re.sub(" ", "-spacechar-filename-", self.output)
 		convert_command_i_replaced = re.sub("%i", self.input, self.command)
-		convert_command = re.sub("%o", re.sub(".flv$", self.filename_extension, self.input), convert_command_i_replaced)
-		output = subprocess.Popen(convert_command.split(), stdout=subprocess.PIPE).communicate()[0]
+		convert_command = re.sub("%o", self.output, convert_command_i_replaced)
+		final_cmd = []
+		for i in convert_command.split():
+			final_cmd.append(i.replace("-spacechar-filename-", " "))
+		output = subprocess.Popen(final_cmd, stdout=subprocess.PIPE).communicate()[0]
 		self.status = 0
 		
 
@@ -126,3 +132,4 @@ if __name__ == "__main__":
 			else: 
 				print "Could not fetch the wanted line. Wrong URL or unsupported video portal!"
 			print "----"
+
