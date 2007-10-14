@@ -28,21 +28,67 @@
 # The video will be saved as FLV file.                                     *
 #***************************************************************************/
 
-from main import get_data
 from main import fdownload
+from main import convert as fconvert
+from main import get_data
 from main import folder_is_writable
 import os, sys, time
 import re
 from time import sleep
+import ConfigParser
 
-if os.path.isdir(sys.argv[1]):
-	save_videos_in = sys.argv[1]
-else:
-	save_videos_in = "."
+to_avi_with_ffmpeg = True
+
+try:
+	if os.path.isdir(sys.argv[1]):
+		save_videos_in = sys.argv[1]
+	else:
+		save_videos_in = "."
+except IndexError:
+	print "Please specify at least one parameter."
+	print "Examples: "
+	print sys.argv[0]+" /home/testuser/videos URL1 [URL2 ...]"
+	print "or"
+	print sys.argv[0]+" URL1 [URL2 ...]"
+	sys.exit(1)
 
 if not folder_is_writable(save_videos_in):
 	print "Can't write to this directory! Change to another."
 	sys.exit(1)
+
+homedir = os.path.expanduser("~")
+configfilename = homedir+"/.gvdownrc"
+config = ConfigParser.RawConfigParser()
+
+if not os.path.isfile(configfilename):
+	config.add_section("general")
+	config.set("general", "convert", "no")
+	config.set("general", "convertcmd", "convertsth --input %i --output %o")
+	config.set("general", "convert_filename_extension", ".avi")
+	config.set("general", "delete_source_file_after_converting", "no")
+	write_config()
+
+config.readfp(open(configfilename))
+try:
+	convert = config.getboolean("general", "convert")
+	convertcmd = config.get("general", "convertcmd")
+	convert_filename_extension = config.get("general", "convert_filename_extension")
+	deletesourcefile = config.getboolean("general", "delete_source_file_after_converting")
+except ConfigParser.NoSectionError: # if not all settings are set, set all settings to default ;)
+	config.add_section("general")
+	config.set("general", "convert", "no")
+	config.set("general", "convertcmd", "convertsth --input %i --output %o")
+	config.set("general", "convert_filename_extension", ".avi")
+	config.set("general", "delete_source_file_after_converting", "no")
+	write_config()
+	save_videos_in = config.get("general", "save_videos_in")
+	convert = config.getboolean("general", "convert")
+	convertcmd = config.get("general", "convertcmd")
+
+	def write_config(self):
+		f = file(configfilename, "w")
+		config.write(f)
+		f.close()
 
 for i in sys.argv:
 	if i != sys.argv[0] and i != save_videos_in:
@@ -85,10 +131,20 @@ for i in sys.argv:
 					sleep(1)
 					progress = down.downloaded()
 					if(progress == 100.0):
-						sys.stdout.write("\rDownload finished! Trying next (if any)...                      \n")
+						sys.stdout.write("\rDownload finished...                                   \n")
+						if convert:
+							print "Converting file"
+							output = fconvert(save_videos_in+"/"+data.data[2], convert_filename_extension, convertcmd)
+							output.start()
+							while output.status == -1:
+								sleep(0.2)
+							print "Converted file."
+							if deletesourcefile:
+								os.remove(save_videos_in+"/"+data.data[2])
+								print "Deleted input (.flv) file"
 						break
 			else:
-				print "Could not fetch the wanted line. Wrong URL or unsupported video portal!"
+				print "Could not fetch the wanted line. Wrong URL or unsupported video portal! But better try again."
 		except KeyboardInterrupt:
 			print "\nKilled by STRG+C, quitting..."
 			sys.exit(1)

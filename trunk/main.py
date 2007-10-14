@@ -28,7 +28,7 @@
 # The video will be saved as FLV file.                                     *
 #***************************************************************************/
 
-import os, sys, httplib, re, urllib2, threading, time
+import os, sys, httplib, re, urllib2, threading, time, subprocess
 
 
 class fdownload(threading.Thread): # not used in this file, but by the other interfaces
@@ -53,6 +53,20 @@ class fdownload(threading.Thread): # not used in this file, but by the other int
 		self.file.close()
 	def get_filesize(self):
 		return int(self.content_len)/1024
+
+class convert(threading.Thread):
+	def __init__(self, input, filename_extension, command):
+		threading.Thread.__init__(self)
+		self.status = -1
+		self.input = input
+		self.filename_extension = filename_extension
+		self.command = command
+	def run(self):
+		convert_command_i_replaced = re.sub("%i", self.input, self.command)
+		convert_command = re.sub("%o", re.sub(".flv$", self.filename_extension, self.input), convert_command_i_replaced)
+		output = subprocess.Popen(convert_command.split(), stdout=subprocess.PIPE).communicate()[0]
+		self.status = 0
+		
 
 class get_data(threading.Thread):
 	def __init__(self, url):
