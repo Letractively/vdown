@@ -1,0 +1,8 @@
+To install vdown and gvdown, do, as root:
+# nonsrc/setup.sh
+(sudo in Ubuntu & derivatives)
+To remove it, just execute
+# nonsrc/remove.sh
+
+License: GNU General Public License v3
+(c) 2007 Nicolai Spohrer <nicolai@xeve.de>
