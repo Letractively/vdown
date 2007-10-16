@@ -1,0 +1,258 @@
+# German translations for PACKAGE package.
+# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Nicolai Spohrer <nicolai@xeve.de>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.5.x\n"
+"Report-Msgid-Bugs-To: Nicolai Spohrer <nicolai@xeve.de>\n"
+"POT-Creation-Date: 2007-10-16 21:59+0200\n"
+"PO-Revision-Date: 2007-10-16 22:00+0200\n"
+"Last-Translator: Nicolai Spohrer <nicolai@xeve.de>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: cli.py:53
+msgid "Please specify at least one parameter."
+msgstr "Bitte mindestens einen Parameter übergeben."
+
+#: cli.py:54
+msgid "Examples: "
+msgstr "Beispiele:"
+
+#: cli.py:55
+msgid " /home/testuser/videos URL1 [URL2 ...]"
+msgstr " /home/testuser/videos URL1 [URL2 ...]"
+
+#: cli.py:56
+msgid "or"
+msgstr "oder"
+
+#: cli.py:57
+msgid " URL1 [URL2 ...]"
+msgstr " URL1 [URL2 ...]"
+
+#: cli.py:61
+msgid "Can't write to this directory! Change to another."
+msgstr "In dieses Verzeichnis kann nicht geschrieben! Bitte in ein anderes wechseln."
+
+#: cli.py:70
+msgid "Trying to download the video..."
+msgstr "Versuche, das Video herunterzuladen..."
+
+#: cli.py:71
+#, python-format
+msgid "URL: %(url)s"
+msgstr "URL: %(url)s"
+
+#: cli.py:78
+#, python-format
+msgid "Saving file as \"%(file)s\"..."
+msgstr "Speichere Datei als \"%(file)s\"..."
+
+#: cli.py:89 gui.py:235
+#, python-format
+msgid "Filesize: %(filesize)s KB"
+msgstr "Dateigröße: %(filesize)s KB"
+
+#: cli.py:102
+msgid "seconds"
+msgstr "Sekunden"
+
+#: cli.py:109
+msgid ""
+"\rDownload "
+"finished...                                                      \n"
+msgstr ""
+"\rDownload "
+"beendet...                                                      \n"
+
+#: cli.py:111
+msgid "Converting file..."
+msgstr "Konvertiere Datei..."
+
+#: cli.py:116 gui.py:153 gui.py:253
+msgid "Converted file."
+msgstr "Datei konvertiert."
+
+#: cli.py:119 gui.py:156 gui.py:256
+msgid "Deleted input (.flv) file"
+msgstr "Eingangsdatei (.flv) gelöscht"
+
+#: cli.py:122
+msgid ""
+"Could not fetch the wanted line. Wrong URL or unsupported video portal! But "
+"better try again."
+msgstr ""
+"Konnte die gesuchte Zeile nicht finden. Falsche URL oder nichtunterstütztes Videoportal! Aber besser nochmal versuchen..."
+
+#: cli.py:124
+msgid ""
+"\n"
+"Killed by CTRL+C, quitting..."
+msgstr ""
+"\n"
+"Durch STRG+C getötet, verlassend..."
+#: gui.py:92
+msgid ""
+"Could not create the directory where the videos shall be saved in (specified "
+"in ~/.gvdownrc)! Check permissions."
+msgstr ""
+"Konnte das Verzeichnis, in dem die Videos gespeichert werden sollen (siehe ~/.gvdownrc) nicht anlegen! Zugriffsrechte überprüfen."
+
+#: gui.py:95
+msgid ""
+"Cannot write to video output directoy! Check permissions or change the "
+"directory in ~/.gvdownrc"
+msgstr ""
+"Kann in den Video-Speicherort nicht schreiben! Zugriffsrechte überprüfen oder das Verzeichnis in ~/.gvdownrc ändern."
+
+#: gui.py:109 gui.py:210
+msgid "Fetching video information..."
+msgstr "Hole Videoinformationen..."
+
+#: gui.py:111
+msgid "No URL specified"
+msgstr "Keine URL angegeben"
+
+#: gui.py:114
+#, python-format
+msgid "Trying to download %(url)s"
+msgstr "Versuche, %(url)s herunterzuladen"
+
+#: gui.py:129
+msgid "Downloading video..."
+msgstr "Lade Video herunter..."
+
+#: gui.py:144
+msgid "Download finished."
+msgstr "Download beendet."
+
+#: gui.py:146 gui.py:246
+msgid "Converting file"
+msgstr "Konvertiere Datei"
+
+#: gui.py:158 gui.py:258
+msgid "Wrong URL / unsupported video portal"
+msgstr "Falsche URL / n. unterstützes Portal"
+
+#: gui.py:204
+msgid "Downloading a list..."
+msgstr "Lade Liste herunter..."
+
+#: gui.py:217
+#, python-format
+msgid "Trying to download %(link)s"
+msgstr "Versuche, %(link)s herunterzuladen"
+
+#: gui.py:225
+#, python-format
+msgid "Saving file as \"%(filename)s\"..."
+msgstr "Speichere Datei als \"%(filename)s\"..."
+
+#: gui.py:228
+#, python-format
+msgid "Downloading video #%(number)s"
+msgstr "Lade Video #%(number)s"
+
+#: gui.py:243
+#, python-format
+msgid "Finished download #%(number)s"
+msgstr "Download #%(number)s beendet"
+
+#: gui.py:259
+#, python-format
+msgid "Download #%(number)s failed"
+msgstr "Download #%(number)s gescheitert"
+
+#: gui.py:262
+#, python-format
+msgid "%(successful)s of %(all)s successful"
+msgstr "%(successful)s von %(all)s erfolgreich"
+
+#: gui.py:310
+msgid "Cannot write to video output folder. Choose another."
+msgstr "Kann in den Video-Speicheroirt nicht schreiben. Bitte anderen wählen."
+
+#: gui.py:323
+#, python-format
+msgid "Could not open %(gladefile)s"
+msgstr "Konnte %(gladefile)s nicht öffnen"
+
+#: main.py:147
+#, python-format
+msgid "Config file %s not found. Creating one for you..."
+msgstr "Konfigurationsdatei %s nicht gefunden. Erstelle eine..."
+
+#: main.py:164
+msgid "Setting settings to default..."
+msgstr "Setze Einstellungen auf Standard..."
+
+#: gvdown.glade.h:1
+msgid "Close window"
+msgstr "Fenster schließen"
+
+#: gvdown.glade.h:3
+#, python-format
+msgid ""
+"Convert command\n"
+"(%i = inputfile, %o = outputfile)"
+msgstr ""
+"Konvertierungskommando\n"
+"(%i = Quelldatei, %o = Ausgangsdatei)"
+
+#: gvdown.glade.h:5
+msgid "Convert videos"
+msgstr "Konvertiere Videos"
+
+#: gvdown.glade.h:6
+msgid "Delete source (.flv) file"
+msgstr "Quelldatei (.flv) löschen"
+
+#: gvdown.glade.h:7
+msgid "Download it!"
+msgstr "Runterladen!"
+
+#: gvdown.glade.h:8
+msgid "Enter the URL of the video:"
+msgstr "Bitte die URL des Videos eingeben:"
+
+#: gvdown.glade.h:9
+msgid "Nothing to do"
+msgstr "Nichts zu tun"
+
+#: gvdown.glade.h:10
+msgid "Save videos in (must be writable!):"
+msgstr "Videos speichern in (muss beschreibbar sein!):"
+
+#: gvdown.glade.h:11
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: gvdown.glade.h:12
+msgid "This program is licenced under the GPLv3."
+msgstr "Dieses Programm ist unter der GPLv3 lizenziert."
+
+#: gvdown.glade.h:13
+msgid "_File"
+msgstr "_Datei"
+
+#: gvdown.glade.h:14
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: gvdown.glade.h:15
+msgid "gtk-close"
+msgstr "gtk-close"
+
+#: gvdown.glade.h:16
+msgid "gvdown"
+msgstr "gvdown"
+
+#: gvdown.glade.h:18
+msgid "translator-credits"
+msgstr "Nicolai Spohrer <nicolai@xeve.de>"
