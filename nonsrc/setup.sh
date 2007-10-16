@@ -4,10 +4,11 @@ if [ ! "$UID" -eq 0 ]; then
         exit 1
 fi
 #which python2.5 > /dev/null || echo "Python 2.5 must be installed!" && exit 1
-mkdir -p /usr/lib/python2.5/site-packages/gvdown
+mkdir -p /usr/lib/python2.5/site-packages/gvdown/po
 cp *.py *.glade /usr/lib/python2.5/site-packages/gvdown
 cp nonsrc/gvdown.xpm /usr/share/pixmaps/
 cp nonsrc/gvdown.desktop /usr/share/applications/
+cp -R po/ /usr/lib/python2.5/site-packages/gvdown/
 echo '#!/bin/bash
 cd /usr/lib/python2.5/site-packages/gvdown
 ./gui.py
