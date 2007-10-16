@@ -1,0 +1,250 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-16 21:59+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cli.py:53
+msgid "Please specify at least one parameter."
+msgstr ""
+
+#: cli.py:54
+msgid "Examples: "
+msgstr ""
+
+#: cli.py:55
+msgid " /home/testuser/videos URL1 [URL2 ...]"
+msgstr ""
+
+#: cli.py:56
+msgid "or"
+msgstr ""
+
+#: cli.py:57
+msgid " URL1 [URL2 ...]"
+msgstr ""
+
+#: cli.py:61
+msgid "Can't write to this directory! Change to another."
+msgstr ""
+
+#: cli.py:70
+msgid "Trying to download the video..."
+msgstr ""
+
+#: cli.py:71
+#, python-format
+msgid "URL: %(url)s"
+msgstr ""
+
+#: cli.py:78
+#, python-format
+msgid "Saving file as \"%(file)s\"..."
+msgstr ""
+
+#: cli.py:89 gui.py:235
+#, python-format
+msgid "Filesize: %(filesize)s KB"
+msgstr ""
+
+#: cli.py:102
+msgid "seconds"
+msgstr ""
+
+#: cli.py:109
+msgid ""
+"\rDownload "
+"finished...                                                      \n"
+msgstr ""
+
+#: cli.py:111
+msgid "Converting file..."
+msgstr ""
+
+#: cli.py:116 gui.py:153 gui.py:253
+msgid "Converted file."
+msgstr ""
+
+#: cli.py:119 gui.py:156 gui.py:256
+msgid "Deleted input (.flv) file"
+msgstr ""
+
+#: cli.py:122
+msgid ""
+"Could not fetch the wanted line. Wrong URL or unsupported video portal! But "
+"better try again."
+msgstr ""
+
+#: cli.py:124
+msgid ""
+"\n"
+"Killed by CTRL+C, quitting..."
+msgstr ""
+
+#: gui.py:92
+msgid ""
+"Could not create the directory where the videos shall be saved in (specified "
+"in ~/.gvdownrc)! Check permissions."
+msgstr ""
+
+#: gui.py:95
+msgid ""
+"Cannot write to video output directoy! Check permissions or change the "
+"directory in ~/.gvdownrc"
+msgstr ""
+
+#: gui.py:109 gui.py:210
+msgid "Fetching video information..."
+msgstr ""
+
+#: gui.py:111
+msgid "No URL specified"
+msgstr ""
+
+#: gui.py:114
+#, python-format
+msgid "Trying to download %(url)s"
+msgstr ""
+
+#: gui.py:129
+msgid "Downloading video..."
+msgstr ""
+
+#: gui.py:144
+msgid "Download finished."
+msgstr ""
+
+#: gui.py:146 gui.py:246
+msgid "Converting file"
+msgstr ""
+
+#: gui.py:158 gui.py:258
+msgid "Wrong URL / unsupported video portal"
+msgstr ""
+
+#: gui.py:204
+msgid "Downloading a list..."
+msgstr ""
+
+#: gui.py:217
+#, python-format
+msgid "Trying to download %(link)s"
+msgstr ""
+
+#: gui.py:225
+#, python-format
+msgid "Saving file as \"%(filename)s\"..."
+msgstr ""
+
+#: gui.py:228
+#, python-format
+msgid "Downloading video #%(number)s"
+msgstr ""
+
+#: gui.py:243
+#, python-format
+msgid "Finished download #%(number)s"
+msgstr ""
+
+#: gui.py:259
+#, python-format
+msgid "Download #%(number)s failed"
+msgstr ""
+
+#: gui.py:262
+#, python-format
+msgid "%(successful)s of %(all)s successful"
+msgstr ""
+
+#: gui.py:310
+msgid "Cannot write to video output folder. Choose another."
+msgstr ""
+
+#: gui.py:323
+#, python-format
+msgid "Could not open %(gladefile)s"
+msgstr ""
+
+#: main.py:147
+#, python-format
+msgid "Config file %s not found. Creating one for you..."
+msgstr ""
+
+#: main.py:164
+msgid "Setting settings to default..."
+msgstr ""
+
+#: gvdown.glade.h:1
+msgid "Close window"
+msgstr ""
+
+#: gvdown.glade.h:3
+#, python-format
+msgid ""
+"Convert command\n"
+"(%i = inputfile, %o = outputfile)"
+msgstr ""
+
+#: gvdown.glade.h:5
+msgid "Convert videos"
+msgstr ""
+
+#: gvdown.glade.h:6
+msgid "Delete source (.flv) file"
+msgstr ""
+
+#: gvdown.glade.h:7
+msgid "Download it!"
+msgstr ""
+
+#: gvdown.glade.h:8
+msgid "Enter the URL of the video:"
+msgstr ""
+
+#: gvdown.glade.h:9
+msgid "Nothing to do"
+msgstr ""
+
+#: gvdown.glade.h:10
+msgid "Save videos in (must be writable!):"
+msgstr ""
+
+#: gvdown.glade.h:11
+msgid "Settings"
+msgstr ""
+
+#: gvdown.glade.h:12
+msgid "This program is licenced under the GPLv3."
+msgstr ""
+
+#: gvdown.glade.h:13
+msgid "_File"
+msgstr ""
+
+#: gvdown.glade.h:14
+msgid "_Help"
+msgstr ""
+
+#: gvdown.glade.h:15
+msgid "gtk-close"
+msgstr ""
+
+#: gvdown.glade.h:16
+msgid "gvdown"
+msgstr ""
+
+#: gvdown.glade.h:18
+msgid "translator-credits"
+msgstr ""
