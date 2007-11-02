@@ -37,10 +37,11 @@ import os, sys, time
 import re
 from time import sleep
 import gettext
+from user import home as userhome
 
 # <Tranlations stuff>
 
-gettext.install("gvdown", "./po", unicode=True)
+gettext.install("gvdown", "po", unicode=True)
 
 # </Translation stuff>
 
@@ -75,8 +76,9 @@ for i in sys.argv:
             while data.status == -1:
                 time.sleep(0.02)
             if data.status == 0:
-                print _('Saving file as "%(file)s"...') % {"file" : data.data[2]}
-                down = fdownload(data.data[0], save_videos_in+"/"+data.data[2])
+                saveAs = os.path.join(save_videos_in, data.data[2])
+                print _('Saving file as "%(file)s"...') % {"file" : saveAs}
+                down = fdownload(data.data[0], saveAs)
                 down.start()
                 progress = down.downloaded()
                 last_progress = progress
@@ -99,9 +101,12 @@ for i in sys.argv:
                     else:
                         ETA = "%.2f" % (left_kb/kb_per_sec) # may be inexact!
                         last_ETA = ETA # if kb_per_sec is 0 and something was already downloaded, print the last ETA
-                    seconds_string = _("seconds") # gettext + this line under me...
-                    sys.stdout.write("\r%.2f \033[6G %% | %s \033[18G KB/s | ETA: %s \033[38G%s" % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA, seconds_string)) # makes it look more static
-                    sys.stdout.flush()
+                    seconds_string = _("seconds") # gettext + this one line under me...
+                    if sys.platform == "linux2":
+                        sys.stdout.write("\r%.2f \033[6G %% | %s \033[18G KB/s | ETA: %s \033[38G%s" % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA, seconds_string)) # makes it look more static
+                        sys.stdout.flush()
+                    else:
+                        print "Downloading..."
                     last_progress = progress
                     sleep(1)
                     progress = down.downloaded()
@@ -109,13 +114,13 @@ for i in sys.argv:
                         sys.stdout.write(_("\rDownload finished...                                                      \n"))
                         if config.getboolean("general", "convert"):
                             print _("Converting file...")
-                            output = fconvert(save_videos_in+"/"+data.data[2], config.get("general", "convert_filename_extension"), config.get("general", "convertcmd"))
+                            output = fconvert(saveAs, config.get("general", "convert_filename_extension"), config.get("general", "convertcmd"))
                             output.start()
                             while output.status == -1:
                                 sleep(0.2)
                             print _("Converted file.")
                             if config.getboolean("general", "delete_source_file_after_converting"):
-                                os.remove(save_videos_in+"/"+data.data[2])
+                                os.remove(saveAs)
                                 print _("Deleted input (.flv) file")
                         break
             else:

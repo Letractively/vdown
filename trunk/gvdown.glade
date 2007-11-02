@@ -98,6 +98,7 @@
               <widget class="GtkButton" id="mainDownload_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="download_single"/>
                 <child>
                   <widget class="GtkAlignment" id="alignment1">
@@ -143,6 +144,7 @@
               <widget class="GtkButton" id="mainClose_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="focus_on_click">False</property>
                 <signal name="clicked" handler="closedSomehow"/>
                 <child>
                   <widget class="GtkAlignment" id="alignment2">

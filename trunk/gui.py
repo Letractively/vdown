@@ -49,8 +49,8 @@ from main import convert
 from main import configuration
 from main import get_data
 from main import folder_is_writable
-import ConfigParser
 import gettext
+from user import home as userhome
 
 gladefile = "gvdown.glade"
 
@@ -72,7 +72,7 @@ class gui:
                 "menu_help_info_clicked" : self.menu_help_info_clicked,
                 "on_aboutdialog_delete" : self.on_aboutdialog_delete,
                 "menu_file_open_clicked" : self.menu_file_open_clicked,
-                "fc_open_file_clicked" : self.download_list,
+                "fc_open_file_clicked" : self.fc_open_clicked,
                 "fc_cancel_clicked" : self.fc_cancel_clicked,
                 "on_filechooserdialog_delete" : self.on_filechooserdialog_delete,
                 "menu_file_settings_clicked" : self.menu_file_settings_clicked,
@@ -80,19 +80,19 @@ class gui:
                 "swindow_close_clicked" : self.swindow_close_clicked}
         self.wTree.signal_autoconnect(dic)
 
-        self.homedir = os.path.expanduser("~")
-
         self.config = configuration()
         self.config.readconfig()
 
+        self.listdownloading = False
+
         if not os.path.isdir(self.config.get("general", "save_videos_in")):
             try:
-                os.mkdir(self.save_videos_in)
+                os.mkdir(self.config.get("general", "save_videos_in"))
             except OSError:
-                print _("Could not create the directory where the videos shall be saved in (specified in ~/.gvdownrc)! Check permissions.")
+                print _("Could not create the directory where the videos shall be saved in (specified in %(configfile)s)! Check permissions.") % {"configfile" : os.path.join(userhome, ".gvdownrc")}
                 sys.exit(1)
         if not folder_is_writable(self.config.get("general", "save_videos_in")):
-            print _("Cannot write to video output directoy! Check permissions or change the directory in ~/.gvdownrc")
+            print _("Cannot write to video output directoy! Check permissions or change the directory in %(configfile)s") % {"configfile" : os.path.join(userhome, ".gvdownrc")}
             sys.exit(1)
 
     def closedSomehow(self, widget, event = None):
@@ -122,7 +122,8 @@ class gui:
                 sleep(0.01)
             gtk.main_iteration_do(True)
             if data.status == 0:
-                print "Saving file as \"%(saveas)s\"..." % {"saveas" : os.path.join(self.config.get("general", "save_videos_in"), data.data[2])}
+                saveAs = os.path.join(self.config.get("general", "save_videos_in"), data.data[2])
+                print "Saving file as \"%filename)s\"..." % {"filename" : saveAs}
                 down = fdownload(data.data[0], data.data[2])
                 down.start()
                 pb.set_fraction(0)
@@ -144,7 +145,7 @@ class gui:
                 pb.set_text(_("Download finished."))
                 if self.config.getboolean("general", "convert"):
                     pb.set_text(_("Converting file"))
-                    output = convert(os.path.join(self.config.get("general", "save_videos_in"), data.data[2]), self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
+                    output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
                     output.start()
                     while output.status == -1:
                         gtk.main_iteration_do(False)
@@ -152,7 +153,7 @@ class gui:
                     gtk.main_iteration_do(True)
                     pb.set_text(_("Converted file."))
                     if self.config.getboolean("general", "delete_source_file_after_converting"):
-                        os.remove(os.path.join(self.config.get("general", "save_videos_in"), data.data[2]))
+                        os.remove(saveAs)
                         print _("Deleted input (.flv) file")
             else:
                 pb.set_text(_("Wrong URL / unsupported video portal"))
@@ -175,7 +176,7 @@ class gui:
 
     def menu_file_open_clicked(self, widget):
         fc = self.wTree.get_widget("filechooserdialog")
-        fc.set_current_folder(self.homedir)
+        fc.set_current_folder(userhome)
         fc.show()
 
     def on_filechooserdialog_delete(self, widget, event):
@@ -188,12 +189,17 @@ class gui:
         fc = self.wTree.get_widget("filechooserdialog")
         fc.hide()
 
-    def download_list(self, widget): # Clicked on button 'open' in filechooserdialog
+    def fc_open_clicked(self, widget):
+        if self.listdownloading == False:
+            self.download_list()
+
+    def download_list(self): # Clicked on button 'open' in filechooserdialog
+        self.listdownloading = True
         fc = self.wTree.get_widget("filechooserdialog")
         pb = self.wTree.get_widget("dprogressbar")
         mainDownload_button = self.wTree.get_widget("mainDownload_button")
         mainClose_button = self.wTree.get_widget("mainClose_button")
-        os.chdir(self.save_videos_in)
+        os.chdir(self.config.get("general", "save_videos_in"))
         fc.hide()
         pb.set_fraction(0)
         chosen_list = fc.get_filename()
@@ -215,6 +221,7 @@ class gui:
                 line = line[:-1]
             print "----"
             print _("Trying to download %(link)s") % {"link" : line}
+            v_no = i+1 # example: You're downloading the v_no. video && You're downloading the 5. video
             data = get_data(line)
             data.start()
             while data.status == -1:
@@ -222,10 +229,11 @@ class gui:
                 sleep(0.01)
             gtk.main_iteration_do(True)
             if data.status == 0:
-                print _("Saving file as \"%(filename)s\"...") % {"filename" : os.path.join(self.config.get("general", "save_videos_in"), data.data[2])}
+                saveAs = os.path.join(self.config.get("general", "save_videos_in"), data.data[2])
+                print _("Saving file as \"%(filename)s\"...") % {"filename" : saveAs}
                 down = fdownload(data.data[0], data.data[2])  # (http://*.*/*, *.flv)
                 down.start()
-                pb.set_text(_("Downloading video #%(number)s")) % {"number" : i+1}
+                pb.set_text(_("Downloading video %(number)s") % {"number" : v_no})
                 progress = down.downloaded()/100
                 while down.get_filesize() == 0:
                     gtk.main_iteration_do(False)
@@ -240,11 +248,11 @@ class gui:
                     progress = down.downloaded()/100
                 gtk.main_iteration_do(True)
                 pb.set_fraction(1)
-                pb.set_text(_("Finished download #%(number)s")) % {"number" : i+1}
+                pb.set_text(_("Finished download #%(number)s") % {"number" : v_no})
                 successful += 1
-                if self.convert:
+                if self.config.getboolean("general", "convert"):
                     pb.set_text(_("Converting file"))
-                    output = convert(self.save_videos_in+"/"+data.data[2], self.convert_filename_extension, self.convertcmd)
+                    output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
                     output.start()
                     while output.status == -1:
                         gtk.main_iteration_do(False)
@@ -252,16 +260,17 @@ class gui:
                     gtk.main_iteration_do(True)
                     pb.set_text(_("Converted file."))
                     if self.deletesourcefile:
-                        os.remove(self.save_videos_in+"/"+data.data[2])
+                        os.remove(saveAs)
                         print _("Deleted input (.flv) file")
             else:
                 print _("Wrong URL / unsupported video portal")
-                pb.set_text(_("Download #%(number)s failed")) % {"number" : i+1}
+                pb.set_text(_("Download #%(number)s failed") % {"number" : v_no})
             i += 1
             print "----"
-        pb.set_text(_("%(successful)s of %(all)s successful")) % {"successful" : successful, "all" : i}
+        pb.set_text(_("%(successful)s of %(all)s successful") % {"successful" : successful, "all" : i})
         mainDownload_button.set_sensitive(True)
         mainClose_button.set_sensitive(True)
+        self.listdownloading = False
         print "-----"
 
 ##
@@ -293,10 +302,8 @@ class gui:
         deletesourcefilebutton = self.wTree.get_widget("deletesourcefilebutton")
         outputdir = sfcb.get_filename()
         if convertbutton.get_active():
-            self.convert = True
             self.config.set("general", "convert", "yes")
         else:
-            self.convert = False
             self.config.set("general", "convert", "no")
         convertcmd = convertcmdentry.get_text()
         self.config.set("general", "convertcmd", convertcmd)

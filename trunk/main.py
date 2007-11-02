@@ -38,6 +38,7 @@ import time
 import subprocess
 import ConfigParser
 import gettext
+from user import home as userhome
 
 # <Tranlations stuff>
 
@@ -79,6 +80,9 @@ class convert(threading.Thread):
         self.filename_extension = filename_extension
         self.command = command
     def run(self):
+        """
+        Start converting
+        """
         self.output = re.sub(".flv$", self.filename_extension, self.input)
         final_cmd = []
         for i in self.command.split():
@@ -138,17 +142,19 @@ def folder_is_writable(dir):
 class configuration(ConfigParser.RawConfigParser):
     """
     Configuration class (based on RawConfigParser)
-    If an error occurs while reading the settings (e.g. ConfigParser.NoSectionError), all settings will be set to default.
     """
     def __init__(self):
         ConfigParser.RawConfigParser.__init__(self)
-        self.configfilename = os.path.expanduser("~")+"/.gvdownrc"
+        self.configfilename = os.path.join(userhome, ".gvdownrc")
         if not os.path.isfile(self.configfilename):
             print _("Config file %s not found. Creating one for you..." % (self.configfilename))
             self.set_defaults()
             self.write_config()
 
     def readconfig(self):
+        """
+        If an error occurs while reading the settings (e.g. ConfigParser.NoSectionError), all settings will be set to default.
+        """
         self.readfp(open(self.configfilename))
         try:
             test = self.get("general", "save_videos_in")
@@ -161,16 +167,22 @@ class configuration(ConfigParser.RawConfigParser):
             self.write_config()
 
     def set_defaults(self):
+        """
+        Set settings to defaults
+        """
         print _("Setting settings to default...")
         if not self.has_section("general"):
             self.add_section("general")
-        self.set("general", "save_videos_in", os.path.expanduser("~/downloads"))
+        self.set("general", "save_videos_in", os.path.join(userhome, "downloads"))
         self.set("general", "convert", "no")
         self.set("general", "convertcmd", "convertsth --input %i --output %o")
         self.set("general", "convert_filename_extension", ".avi")
         self.set("general", "delete_source_file_after_converting", "no")
 
     def write_config(self):
+        """
+        Write config file
+        """
         f = file(self.configfilename, "w")
         self.write(f)
         f.close()
@@ -179,15 +191,15 @@ if __name__ == "__main__":
     for i in sys.argv:
         if i != sys.argv[0]:
             print "----"
-            print "URL           : "+i
+            print "URL           : %(url)s" % {"url" : i}
 
             data = get_data(i)
             data.start()
             while data.status == -1:
                 time.sleep(0.02)
             if data.status == 0:
-                print "Download link : "+data.data[0]
-                print "Video name    : "+data.data[1]
+                print _("Download link : %(dlink)s") % {"dlink" : data.data[0]}
+                print _("Video name    : %(vname)s") % {"vname" : data.data[1]}
             else:
-                print "Could not fetch the wanted line. Wrong URL or unsupported video portal!"
+                print _("Could not fetch the wanted line. Wrong URL or unsupported video portal!")
             print "----"
