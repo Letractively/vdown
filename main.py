@@ -42,7 +42,7 @@ from user import home as userhome
 
 # <Tranlations stuff>
 
-gettext.install("gvdown", "./po", unicode=True)
+gettext.install("gvdown", "po", unicode=True)
 
 # </Translation stuff>
 
