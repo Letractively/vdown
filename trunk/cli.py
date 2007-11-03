@@ -83,6 +83,7 @@ for i in sys.argv:
                 progress = down.downloaded()
                 last_progress = progress
                 last_ETA = 0.00
+                putWinString = False
                 sleep(1) # give "it" some time to get the filesize, otherwise it'd be just '100'
                 filesize = down.get_filesize()
                 while filesize == 0: # if it was not enough
@@ -105,11 +106,12 @@ for i in sys.argv:
                     if sys.platform == "linux2":
                         sys.stdout.write("\r%.2f \033[6G %% | %s \033[18G KB/s | ETA: %s \033[38G%s" % (float(progress), str(kb_per_sec_asfloat).rjust(7), ETA, seconds_string)) # makes it look more static
                         sys.stdout.flush()
-                    else:
-                        print "Downloading..."
-                    last_progress = progress
-                    sleep(1)
+                        last_progress = progress
+                        sleep(1)
                     progress = down.downloaded()
+                    if sys.platform != "linux2" and putWinString == False:
+                        print _("Downloading...")
+                        putWinString = True
                     if(progress == 100.0):
                         sys.stdout.write(_("\rDownload finished...                                                      \n"))
                         if config.getboolean("general", "convert"):

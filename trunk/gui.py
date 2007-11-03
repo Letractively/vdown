@@ -123,7 +123,7 @@ class gui:
             gtk.main_iteration_do(True)
             if data.status == 0:
                 saveAs = os.path.join(self.config.get("general", "save_videos_in"), data.data[2])
-                print "Saving file as \"%filename)s\"..." % {"filename" : saveAs}
+                print "Saving file as \"%(filename)s\"..." % {"filename" : saveAs}
                 down = fdownload(data.data[0], data.data[2])
                 down.start()
                 pb.set_fraction(0)
