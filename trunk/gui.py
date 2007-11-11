@@ -143,7 +143,7 @@ class gui:
                 gtk.main_iteration_do(True)
                 pb.set_fraction(1)
                 pb.set_text(_("Download finished."))
-                if self.config.getboolean("general", "convert"):
+                if self.config.getboolean("general", "convert") and data.data[3]:
                     pb.set_text(_("Converting file"))
                     output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
                     output.start()
@@ -250,7 +250,7 @@ class gui:
                 pb.set_fraction(1)
                 pb.set_text(_("Finished download #%(number)s") % {"number" : v_no})
                 successful += 1
-                if self.config.getboolean("general", "convert"):
+                if self.config.getboolean("general", "convert") and data.data[3]:
                     pb.set_text(_("Converting file"))
                     output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
                     output.start()
