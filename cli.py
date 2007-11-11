@@ -114,7 +114,7 @@ for i in sys.argv:
                         putWinString = True
                     if(progress == 100.0):
                         sys.stdout.write(_("\rDownload finished...                                                      \n"))
-                        if config.getboolean("general", "convert"):
+                        if config.getboolean("general", "convert") and data.data[3]:
                             print _("Converting file...")
                             output = fconvert(saveAs, config.get("general", "convert_filename_extension"), config.get("general", "convertcmd"))
                             output.start()

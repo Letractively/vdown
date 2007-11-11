@@ -99,26 +99,33 @@ class get_data(threading.Thread):
         threading.Thread.__init__(self)
         self.status = -1
         self.url = url
-        self.data = [None, None, None]
+        self.data = [None, None, None, None]
     def run(self):
-        SITE="www.videograb.de"
-        FILENAME="/cgi-bin/video.cgi?url="+self.url
+        if re.match("(http://)?stage6.divx.com/[^0-9]*/video/[0-9]*/.*", self.url) == None: # if no stage6 video
+            SITE="www.videograb.de"
+            FILENAME="/cgi-bin/video.cgi?url="+self.url
 
-        con_vg=httplib.HTTPConnection(SITE)
-        con_vg.request("GET", FILENAME)
-        con_vg_info = con_vg.getresponse()
-        con_vg_data=con_vg_info.read()
+            con_vg=httplib.HTTPConnection(SITE)
+            con_vg.request("GET", FILENAME)
+            con_vg_info = con_vg.getresponse()
+            con_vg_data=con_vg_info.read()
 
-        try:
-            WANTEDLINE=[ l for l in con_vg_data.splitlines() if ">Download von " in l][0] # echo "rabfoo \nfoobar" | grep bar
-        except IndexError:
-            self.status = 1
-        else:
-            WANTEDLINK=re.sub(">Download$", "", re.sub("\"", "", re.sub("href\=", "", re.split(" ", WANTEDLINE)[1])))
-            WANTEDNAME=re.sub("<br>$", "", re.split("</a>: ", WANTEDLINE)[1])
-            VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
+            try:
+                WANTEDLINE=[ l for l in con_vg_data.splitlines() if ">Download von " in l][0] # echo "rabfoo \nfoobar" | grep bar
+            except IndexError:
+                self.status = 1
+            else:
+                WANTEDLINK=re.sub(">Download$", "", re.sub("\"", "", re.sub("href\=", "", re.split(" ", WANTEDLINE)[1])))
+                WANTEDNAME=re.sub("<br>$", "", re.split("</a>: ", WANTEDLINE)[1])
+                VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
+                self.status = 0
+                self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
+        else: # if stage6 video
+            video_id = re.match("(http://)?stage6.divx.com/[^0-9]*/video/([0-9]*)/.*", self.url).group(2)
+            WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
+            VIDEO_FILENAME=re.sub("$", ".divx", video_id) # add .divx at the end
             self.status = 0
-            self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME]
+            self.data = [WANTEDLINK, video_id, VIDEO_FILENAME, False]
 
 def folder_is_writable(dir):
     """
