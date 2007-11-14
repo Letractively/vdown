@@ -120,7 +120,6 @@ class get_data(threading.Thread):
                 self.status = 0
                 self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
         else: # if stage6 video
-            print "is stage6"
             video_id = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/.*", self.url).group(2)
             WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
             VIDEO_FILENAME=re.sub("$", ".divx", video_id) # add .divx at the end
