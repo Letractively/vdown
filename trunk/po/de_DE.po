@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.5.x\n"
+"Project-Id-Version: 0.x.x\n"
 "Report-Msgid-Bugs-To: Nicolai Spohrer <nicolai@xeve.de>\n"
-"POT-Creation-Date: 2007-10-16 21:59+0200\n"
-"PO-Revision-Date: 2007-10-16 22:00+0200\n"
+"POT-Creation-Date: 2007-11-14 16:25+0100\n"
+"PO-Revision-Date: 2007-11-14 16:18+0100\n"
 "Last-Translator: Nicolai Spohrer <nicolai@xeve.de>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -16,104 +16,114 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: cli.py:53
-msgid "Please specify at least one parameter."
-msgstr "Bitte mindestens einen Parameter übergeben."
+#: cli.py:49
+msgid "Usage: %prog [options] URL1 [URL2] [...]"
+msgstr "%prog [options] URL1 [URL2] [...]"
 
-#: cli.py:54
-msgid "Examples: "
-msgstr "Beispiele:"
+#: cli.py:52
+msgid "show this help message and exit"
+msgstr "zeige diese Hilfsnachricht und breche ab"
 
 #: cli.py:55
-msgid " /home/testuser/videos URL1 [URL2 ...]"
-msgstr " /home/testuser/videos URL1 [URL2 ...]"
-
-#: cli.py:56
-msgid "or"
-msgstr "oder"
+msgid "save videos in DEST"
+msgstr "speichere Videos in DEST"
 
 #: cli.py:57
-msgid " URL1 [URL2 ...]"
-msgstr " URL1 [URL2 ...]"
+msgid "save video file as FILE"
+msgstr "speichere Video als FILE"
 
-#: cli.py:61
+#: cli.py:62
 msgid "Can't write to this directory! Change to another."
-msgstr "In dieses Verzeichnis kann nicht geschrieben! Bitte in ein anderes wechseln."
+msgstr "In dieses Verzeichnis kann nicht geschrieben werden! Bitte in ein anderes wechseln."
 
-#: cli.py:70
+#: cli.py:69
+#, fuzzy
+msgid "Specify at least one video."
+msgstr "Bitte mindestens einen Parameter übergeben."
+
+#: cli.py:75
 msgid "Trying to download the video..."
 msgstr "Versuche, das Video herunterzuladen..."
 
-#: cli.py:71
+#: cli.py:76
 #, python-format
 msgid "URL: %(url)s"
-msgstr "URL: %(url)s"
+msgstr ""
 
-#: cli.py:78
+#: cli.py:87
 #, python-format
 msgid "Saving file as \"%(file)s\"..."
 msgstr "Speichere Datei als \"%(file)s\"..."
 
-#: cli.py:89 gui.py:235
+#: cli.py:99 gui.py:243
 #, python-format
 msgid "Filesize: %(filesize)s KB"
 msgstr "Dateigröße: %(filesize)s KB"
 
-#: cli.py:102
+#: cli.py:112
 msgid "seconds"
 msgstr "Sekunden"
 
-#: cli.py:109
+#: cli.py:120
+msgid "Downloading..."
+msgstr "Lade herunter..."
+
+#: cli.py:123
+#, fuzzy
 msgid ""
 "\rDownload "
-"finished...                                                      \n"
+"finished...                                                        \n"
 msgstr ""
-"\rDownload "
-"beendet...                                                      \n"
+"\rDownload beendet...                                                      \n"
 
-#: cli.py:111
+#: cli.py:125
 msgid "Converting file..."
 msgstr "Konvertiere Datei..."
 
-#: cli.py:116 gui.py:153 gui.py:253
+#: cli.py:130 gui.py:154 gui.py:261
 msgid "Converted file."
 msgstr "Datei konvertiert."
 
-#: cli.py:119 gui.py:156 gui.py:256
+#: cli.py:133 gui.py:157 gui.py:264
 msgid "Deleted input (.flv) file"
-msgstr "Eingangsdatei (.flv) gelöscht"
+msgstr "Quelldatei (.flv) gelöscht"
 
-#: cli.py:122
+#: cli.py:136
 msgid ""
 "Could not fetch the wanted line. Wrong URL or unsupported video portal! But "
 "better try again."
-msgstr ""
-"Konnte die gesuchte Zeile nicht finden. Falsche URL oder nichtunterstütztes Videoportal! Aber besser nochmal versuchen..."
+msgstr "Konnte die gesuchte Zeile nicht finden. Falsche URL oder nicht unterstütztes Videoportal! "
+"Aber am besten nochmal versuchen."
 
-#: cli.py:124
+#: cli.py:138
 msgid ""
 "\n"
 "Killed by CTRL+C, quitting..."
 msgstr ""
 "\n"
-"Durch STRG+C getötet, verlassend..."
+"Getötet von STRG+C, verlassend..."
+
 #: gui.py:92
+#, fuzzy, python-format
 msgid ""
 "Could not create the directory where the videos shall be saved in (specified "
-"in ~/.gvdownrc)! Check permissions."
+"in %(configfile)s)! Check permissions."
 msgstr ""
-"Konnte das Verzeichnis, in dem die Videos gespeichert werden sollen (siehe ~/.gvdownrc) nicht anlegen! Zugriffsrechte überprüfen."
+"Konnte das Verzeichnis, in dem die Videos gespeichert werden sollen (siehe "
+"~/.gvdownrc) nicht anlegen! Zugriffsrechte überprüfen."
 
 #: gui.py:95
+#, fuzzy, python-format
 msgid ""
 "Cannot write to video output directoy! Check permissions or change the "
-"directory in ~/.gvdownrc"
+"directory in %(configfile)s"
 msgstr ""
-"Kann in den Video-Speicherort nicht schreiben! Zugriffsrechte überprüfen oder das Verzeichnis in ~/.gvdownrc ändern."
+"Kann in den Video-Speicherort nicht schreiben! Zugriffsrechte überprüfen "
+"oder das Verzeichnis in ~/.gvdownrc ändern."
 
-#: gui.py:109 gui.py:210
+#: gui.py:109 gui.py:216
 msgid "Fetching video information..."
-msgstr "Hole Videoinformationen..."
+msgstr "Hole Videoinformationen"
 
 #: gui.py:111
 msgid "No URL specified"
@@ -124,73 +134,87 @@ msgstr "Keine URL angegeben"
 msgid "Trying to download %(url)s"
 msgstr "Versuche, %(url)s herunterzuladen"
 
-#: gui.py:129
+#: gui.py:130
 msgid "Downloading video..."
 msgstr "Lade Video herunter..."
 
-#: gui.py:144
+#: gui.py:145
 msgid "Download finished."
-msgstr "Download beendet."
+msgstr "Download beendet"
 
-#: gui.py:146 gui.py:246
+#: gui.py:147 gui.py:254
 msgid "Converting file"
 msgstr "Konvertiere Datei"
 
-#: gui.py:158 gui.py:258
+#: gui.py:159 gui.py:266
 msgid "Wrong URL / unsupported video portal"
-msgstr "Falsche URL / n. unterstützes Portal"
+msgstr "Falsche URL / n. unterstütztes Videoportal"
 
-#: gui.py:204
+#: gui.py:210
 msgid "Downloading a list..."
-msgstr "Lade Liste herunter..."
+msgstr "Lade eine Liste herunter..."
 
-#: gui.py:217
+#: gui.py:223
 #, python-format
 msgid "Trying to download %(link)s"
-msgstr "Versuche, %(link)s herunterzuladen"
+msgstr ""
 
-#: gui.py:225
+#: gui.py:233
 #, python-format
 msgid "Saving file as \"%(filename)s\"..."
 msgstr "Speichere Datei als \"%(filename)s\"..."
 
-#: gui.py:228
-#, python-format
-msgid "Downloading video #%(number)s"
+#: gui.py:236
+#, fuzzy, python-format
+msgid "Downloading video %(number)s"
 msgstr "Lade Video #%(number)s"
 
-#: gui.py:243
+#: gui.py:251
 #, python-format
 msgid "Finished download #%(number)s"
-msgstr "Download #%(number)s beendet"
+msgstr "Video #%(number)s beendet"
 
-#: gui.py:259
+#: gui.py:267
 #, python-format
 msgid "Download #%(number)s failed"
 msgstr "Download #%(number)s gescheitert"
 
-#: gui.py:262
+#: gui.py:270
 #, python-format
 msgid "%(successful)s of %(all)s successful"
 msgstr "%(successful)s von %(all)s erfolgreich"
 
-#: gui.py:310
+#: gui.py:321
 msgid "Cannot write to video output folder. Choose another."
 msgstr "Kann in den Video-Speicheroirt nicht schreiben. Bitte anderen wählen."
 
-#: gui.py:323
+#: gui.py:334
 #, python-format
 msgid "Could not open %(gladefile)s"
 msgstr "Konnte %(gladefile)s nicht öffnen"
 
-#: main.py:147
+#: main.py:157
 #, python-format
 msgid "Config file %s not found. Creating one for you..."
-msgstr "Konfigurationsdatei %s nicht gefunden. Erstelle eine..."
+msgstr "Die Konfigurationsdatei %s konnte nicht gefunden werden. Es wird eine erstellt..."
 
-#: main.py:164
+#: main.py:180
 msgid "Setting settings to default..."
-msgstr "Setze Einstellungen auf Standard..."
+msgstr "Setze Einstellungen auf Standard zurück..."
+
+#: main.py:208
+#, fuzzy, python-format
+msgid "Download link : %(dlink)s"
+msgstr "Lade Video #%(number)s"
+
+#: main.py:209
+#, python-format
+msgid "Video name    : %(vname)s"
+msgstr "Videoname:    : %(vname)s"
+
+#: main.py:211
+msgid "Could not fetch the wanted line. Wrong URL or unsupported video portal!"
+msgstr "Konnte die gesuchte Zeile nicht finden. Falsche URL oder nicht unterstütztes Videoportal!"
 
 #: gvdown.glade.h:1
 msgid "Close window"
@@ -203,15 +227,15 @@ msgid ""
 "(%i = inputfile, %o = outputfile)"
 msgstr ""
 "Konvertierungskommando\n"
-"(%i = Quelldatei, %o = Ausgangsdatei)"
+"(%i = Quelldatei, %o = Zieldatei)"
 
 #: gvdown.glade.h:5
 msgid "Convert videos"
-msgstr "Konvertiere Videos"
+msgstr "Videos konvertiert"
 
 #: gvdown.glade.h:6
 msgid "Delete source (.flv) file"
-msgstr "Quelldatei (.flv) löschen"
+msgstr "Quelldatei (.flv) gelöscht"
 
 #: gvdown.glade.h:7
 msgid "Download it!"
@@ -219,40 +243,44 @@ msgstr "Runterladen!"
 
 #: gvdown.glade.h:8
 msgid "Enter the URL of the video:"
-msgstr "Bitte die URL des Videos eingeben:"
+msgstr "Bitte dir URL des Videos eingeben:"
 
 #: gvdown.glade.h:9
+msgid "Filename extension"
+msgstr "Dateinamenserweiterung"
+
+#: gvdown.glade.h:10
 msgid "Nothing to do"
 msgstr "Nichts zu tun"
 
-#: gvdown.glade.h:10
-msgid "Save videos in (must be writable!):"
-msgstr "Videos speichern in (muss beschreibbar sein!):"
-
 #: gvdown.glade.h:11
+msgid "Save videos in (must be writable!):"
+msgstr "Speiche Videos in (muss beschreibbar sein!):"
+
+#: gvdown.glade.h:12
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: gvdown.glade.h:12
-msgid "This program is licenced under the GPLv3."
-msgstr "Dieses Programm ist unter der GPLv3 lizenziert."
-
 #: gvdown.glade.h:13
+msgid "This program is licenced under the GPLv3."
+msgstr "Diese Anwendung ist lizenziert unter der GPLv3."
+
+#: gvdown.glade.h:14
 msgid "_File"
 msgstr "_Datei"
 
-#: gvdown.glade.h:14
+#: gvdown.glade.h:15
 msgid "_Help"
 msgstr "_Hilfe"
 
-#: gvdown.glade.h:15
-msgid "gtk-close"
-msgstr "gtk-close"
-
 #: gvdown.glade.h:16
-msgid "gvdown"
-msgstr "gvdown"
+msgid "gtk-close"
+msgstr ""
 
-#: gvdown.glade.h:18
+#: gvdown.glade.h:17
+msgid "gvdown"
+msgstr ""
+
+#: gvdown.glade.h:19
 msgid "translator-credits"
 msgstr "Nicolai Spohrer <nicolai@xeve.de>"
