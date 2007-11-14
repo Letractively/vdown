@@ -280,12 +280,14 @@ class gui:
         sfcb = self.wTree.get_widget("sfcb") # settings filechooser button
         convertbutton = self.wTree.get_widget("convertbutton")
         convertcmdentry = self.wTree.get_widget("convertcmdentry")
+        fextension_entry = self.wTree.get_widget("fextension_entry")
         deletesourcefilebutton = self.wTree.get_widget("deletesourcefilebutton")
         sfcb.set_local_only(True)
         sfcb.set_show_hidden(False)
         sfcb.set_current_folder(self.config.get("general", "save_videos_in"))
         convertbutton.set_active(self.config.getboolean("general", "convert"))
         convertcmdentry.set_text(self.config.get("general", "convertcmd"))
+        fextension_entry.set_text(self.config.get("general", "convert_filename_extension"))
         deletesourcefilebutton.set_active(self.config.getboolean("general", "delete_source_file_after_converting"))
         swindow.show()
 
@@ -299,6 +301,7 @@ class gui:
         swindow = self.wTree.get_widget("settingswindow")
         convertcmdentry = self.wTree.get_widget("convertcmdentry")
         convertbutton = self.wTree.get_widget("convertbutton")
+        fextension_entry = self.wTree.get_widget("fextension_entry")
         deletesourcefilebutton = self.wTree.get_widget("deletesourcefilebutton")
         outputdir = sfcb.get_filename()
         if convertbutton.get_active():
@@ -307,6 +310,7 @@ class gui:
             self.config.set("general", "convert", "no")
         convertcmd = convertcmdentry.get_text()
         self.config.set("general", "convertcmd", convertcmd)
+        self.config.set("general", "convert_filename_extension", fextension_entry.get_text())
         deletesourcefile = deletesourcefilebutton.get_active()
         if deletesourcefile:
             self.config.set("general", "delete_source_file_after_converting", "yes")
