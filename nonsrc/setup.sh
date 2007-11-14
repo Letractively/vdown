@@ -16,7 +16,7 @@ exit 0' > /usr/bin/gvdown
 echo '#!/bin/bash
 CWD=$(pwd)
 cd /usr/lib/python2.5/site-packages/gvdown
-./cli.py $CWD $@
+./cli.py --destination=$CWD $@
 exit 0' > /usr/bin/vdown
 chmod +x /usr/bin/vdown
 chmod +x /usr/bin/gvdown
