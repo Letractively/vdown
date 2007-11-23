@@ -58,7 +58,7 @@ class fdownload(threading.Thread): # not used in this file, but by the other int
 
     def run(self):
         req = urllib2.Request(self.url)
-        req.add_header('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20061201 Firefox/2.0.0.6 (Ubuntu-feisty)')
+        req.add_header('User-Agent', '(g)vdown (http://vdown.googlecode.com)')
         con = urllib2.urlopen(req)
         self.content_len = con.info()['Content-length']
         arived_len = 0
@@ -94,6 +94,7 @@ class convert(threading.Thread):
 class get_data(threading.Thread):
     """
     Fetch data from videograb.de
+    FIXME: make this a bit prettier
     """
     def __init__(self, url):
         threading.Thread.__init__(self)
@@ -130,19 +131,19 @@ def folder_is_writable(dir):
     """
     Check if we can write into a folder (creates a testfile there)
     """
-    if os.path.isfile(dir+"/vdown_test.testfile"): # do not delete the test file if it exists
+    if os.path.isfile(os.path.join(dir, "vdown_test.testfile")): # do not delete the test file if it exists
         EXISTS = True
     else:
         EXISTS = False
 
     try:
-        file = open(dir+"/vdown_test.testfile", "wb")
+        file = open(os.path.join(dir, "vdown_test.testfile"), "wb")
         file.close()
     except IOError:
         return False
     else:
         if not EXISTS:
-            os.remove(dir+"/vdown_test.testfile")
+            os.remove(os.path.join(dir, "vdown_test.testfile"))
         return True
 
 class configuration(ConfigParser.RawConfigParser):
