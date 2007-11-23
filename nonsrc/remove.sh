@@ -6,5 +6,7 @@ fi
 rm -rf /usr/lib/python2.5/site-packages/gvdown
 rm /usr/bin/vdown
 rm /usr/bin/gvdown
+rm /usr/share/pixmaps/gvdown.xpm
+rm /usr/share/applications/gvdown.desktop
 
 echo "Removed gvdown successfully."
