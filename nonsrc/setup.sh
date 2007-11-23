@@ -20,6 +20,6 @@ cd /usr/lib/python2.5/site-packages/gvdown
 exit 0' > /usr/bin/vdown
 chmod +x /usr/bin/vdown
 chmod +x /usr/bin/gvdown
-echo ""
+echo "---"
 echo "Installation was successful, if no errors were shown."
 echo "You can now start vdown with 'vdown URL1 URL2' and so on, you can start gvdown with Applications->Internet->GVDOWN or 'gvdown'."
