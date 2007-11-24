@@ -140,7 +140,7 @@ msgstr "Lade Video herunter..."
 
 #: gui.py:145
 msgid "Download finished."
-msgstr "Download beendet"
+msgstr "Download beendet."
 
 #: gui.py:147 gui.py:254
 msgid "Converting file"
@@ -157,7 +157,7 @@ msgstr "Lade eine Liste herunter..."
 #: gui.py:223
 #, python-format
 msgid "Trying to download %(link)s"
-msgstr ""
+msgstr "Versuche, %(link)s herunterzuladen"
 
 #: gui.py:233
 #, python-format
@@ -167,7 +167,7 @@ msgstr "Speichere Datei als \"%(filename)s\"..."
 #: gui.py:236
 #, fuzzy, python-format
 msgid "Downloading video %(number)s"
-msgstr "Lade Video #%(number)s"
+msgstr "Lade Video %(number)s"
 
 #: gui.py:251
 #, python-format
@@ -186,7 +186,7 @@ msgstr "%(successful)s von %(all)s erfolgreich"
 
 #: gui.py:321
 msgid "Cannot write to video output folder. Choose another."
-msgstr "Kann in den Video-Speicheroirt nicht schreiben. Bitte anderen wählen."
+msgstr "Kann in den Video-Speicherort nicht schreiben. Bitte anderen wählen."
 
 #: gui.py:334
 #, python-format
@@ -210,7 +210,7 @@ msgstr "Downloadlink  : %(dlink)s"
 #: main.py:209
 #, python-format
 msgid "Video name    : %(vname)s"
-msgstr "Videoname:    : %(vname)s"
+msgstr "Videoname     : %(vname)s"
 
 #: main.py:211
 msgid "Could not fetch the wanted line. Wrong URL or unsupported video portal!"
@@ -231,11 +231,11 @@ msgstr ""
 
 #: gvdown.glade.h:5
 msgid "Convert videos"
-msgstr "Videos konvertiert"
+msgstr "Videos konvertieren"
 
 #: gvdown.glade.h:6
 msgid "Delete source (.flv) file"
-msgstr "Quelldatei (.flv) gelöscht"
+msgstr "Quelldatei (.flv) löschen"
 
 #: gvdown.glade.h:7
 msgid "Download it!"
