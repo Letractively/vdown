@@ -182,7 +182,7 @@ class configuration(ConfigParser.RawConfigParser):
             self.add_section("general")
         self.set("general", "save_videos_in", os.path.join(userhome, "downloads"))
         self.set("general", "convert", "no")
-        self.set("general", "convertcmd", "convertsth --input %i --output %o")
+        self.set("general", "convertcmd", "ffmpeg -i %i -acodec mp3 %o")
         self.set("general", "convert_filename_extension", ".avi")
         self.set("general", "delete_source_file_after_converting", "no")
 
