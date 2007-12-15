@@ -34,7 +34,7 @@ try:
     import pygtk
     pygtk.require("2.0")
 except:
-    print "PyGTKv2 needed"
+    print "PyGTKv2 and Python-Glade2 needed"
     sys.exit(1)
 
 try:
