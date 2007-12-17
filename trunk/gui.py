@@ -24,8 +24,7 @@
 # Filename   : gui.py                                                      *
 # Description: Downloads videos from video sharing websites like YouTube,  *
 #       Myspace Video, Google Video, Clipfish and so on.                   *
-# This application uses <videograb.de>                                     *
-# The video will be saved as FLV file.                                     *
+# The video will be saved as FLV file (but can be converted).              *
 #***************************************************************************/
 
 import os, sys, re

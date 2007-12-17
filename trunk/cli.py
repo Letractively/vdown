@@ -21,11 +21,10 @@
 #*   Free Software Foundation, Inc.,                                       *
 #*   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 #***************************************************************************
-# Filename   : cli.py                                                      *
+# Filename   : gui.py                                                      *
 # Description: Downloads videos from video sharing websites like YouTube,  *
 #       Myspace Video, Google Video, Clipfish and so on.                   *
-# This application uses <videograb.de>                                     *
-# The video will be saved as FLV file.                                     *
+# The video will be saved as FLV file (but can be converted).              *
 #***************************************************************************/
 
 from main import fdownload

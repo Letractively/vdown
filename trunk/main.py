@@ -21,17 +21,17 @@
 #*   Free Software Foundation, Inc.,                                       *
 #*   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 #***************************************************************************
-# Filename   : main.py                                                     *
+# Filename   : gui.py                                                      *
 # Description: Downloads videos from video sharing websites like YouTube,  *
 #       Myspace Video, Google Video, Clipfish and so on.                   *
-# This application uses <videograb.de>                                     *
-# The video will be saved as FLV file.                                     *
+# The video will be saved as FLV file (but can be converted).              *
 #***************************************************************************/
 
 import os
 import sys
 import httplib
 import re
+from urllib import urlencode
 import urllib2
 import threading
 import time
@@ -103,20 +103,24 @@ class get_data(threading.Thread):
         self.data = [None, None, None, None]
     def run(self):
         if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) == None: # if no stage6 video
-            SITE="www.videograb.de"
-            FILENAME="/cgi-bin/video.cgi?url="+self.url
-            con_vg=httplib.HTTPConnection(SITE)
-            con_vg.request("GET", FILENAME)
-            con_vg_info = con_vg.getresponse()
-            con_vg_data=con_vg_info.read()
-
+            SITE="www.nachrichtenmann.de"
+            FILENAME="/cgi-bin/video/video.cgi"
+            params = urlencode({"downloadurl" : self.url})
+            headers = {"Content-type": "application/x-www-form-urlencoded",
+                        "Accept": "text/plain"}
+            con=httplib.HTTPConnection(SITE)
+            con.request("POST", FILENAME, params, headers)
+            con_info=con.getresponse()
+            con_data=con_info.read()
+            lines=con_data.splitlines()
             try:
-                WANTEDLINE=[ l for l in con_vg_data.splitlines() if ">Download von " in l][0] # echo "rabfoo \nfoobar" | grep bar
+                WANTEDLINE_LINK=lines.index([x for x in lines if '<font color="#00FF00">Download von ' in x][0]) # returns line number
+                WANTEDLINE_NAME=WANTEDLINE_LINK+1
             except IndexError:
                 self.status = 1
             else:
-                WANTEDLINK=re.sub(">Download$", "", re.sub("\"", "", re.sub("href\=", "", re.split(" ", WANTEDLINE)[1])))
-                WANTEDNAME=re.sub("<br>$", "", re.split("</a>: ", WANTEDLINE)[1])
+                WANTEDLINK=re.split('"', lines[WANTEDLINE_LINK])[1]
+                WANTEDNAME=lines[WANTEDLINE_NAME].replace("\t", "").replace("</font><br>", "")
                 VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
                 self.status = 0
                 self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
