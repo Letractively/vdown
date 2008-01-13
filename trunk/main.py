@@ -93,13 +93,13 @@ class convert(threading.Thread):
 
 class get_data(threading.Thread):
     """
-    Fetch data from videograb.de
+    Fetch data from nachrichtenmann.de/cgi-bin/video/video.cgi
     FIXME: make this a bit prettier
     """
     def __init__(self, url):
         threading.Thread.__init__(self)
         self.status = -1
-        self.url = url
+        self.url = url.replace("www.stage6.com", "stage6.divx.com").replace("stage6.com", "stage6.divx.com")
         self.data = [None, None, None, None]
     def run(self):
         if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) == None: # if no stage6 video
