@@ -103,9 +103,11 @@ class get_data(threading.Thread):
         self.data = [None, None, None, None]
     def run(self):
         if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) == None: # if no stage6 video
-            SITE="www.nachrichtenmann.de"
-            FILENAME="/cgi-bin/video/video.cgi"
-            params = urlencode({"downloadurl" : self.url})
+            SITE="www.2video.de"
+            FILENAME="/"
+            params = urlencode({"dl" : self.url,
+                                "req" : "downloads",
+                                "action" : "download"})
             headers = {"Content-type": "application/x-www-form-urlencoded",
                         "Accept": "text/plain"}
             con=httplib.HTTPConnection(SITE)
@@ -113,14 +115,24 @@ class get_data(threading.Thread):
             con_info=con.getresponse()
             con_data=con_info.read()
             lines=con_data.splitlines()
+            SITE=re.match("(http://)?(.*)/(.*)", self.url).group(2)
+            FILENAME=re.match("(http://)?(.*)/(.*)", self.url).group(3)
+            con2=httplib.HTTPConnection(SITE)
+            con2.request("GET", "/"+FILENAME)
+            con2_data=con2.getresponse().read()
+            mylines=con2_data.splitlines()
+            
+
             try:
-                WANTEDLINE_LINK=lines.index([x for x in lines if '<font color="#00FF00">Download von ' in x][0]) # returns line number
-                WANTEDLINE_NAME=WANTEDLINE_LINK+1
-            except IndexError:
+                LINKLINE_NR=lines.index([x for x in lines if 'target="_blank">Download von ' in x][0])
+                WANTEDLINK=re.match('.*<a href="(.*)" target=.*', lines[LINKLINE_NR]).group(1)
+                WANTEDNAME_NR=mylines.index([x for x in mylines if '<title>' in x][0])
+                WANTEDNAME=re.match('.*<title>(.*)</title>.*', mylines[WANTEDNAME_NR]).group(1)
+                print WANTEDNAME
+
+            except NameError:
                 self.status = 1
             else:
-                WANTEDLINK=re.split('"', lines[WANTEDLINE_LINK])[1]
-                WANTEDNAME=lines[WANTEDLINE_NAME].replace("\t", "").replace("</font><br>", "")
                 VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
                 self.status = 0
                 self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]

@@ -83,7 +83,7 @@ for i in args:
                 saveAs = options.saveAs
             else:
                 saveAs = os.path.join(options.destination, data.data[2])
-            print _('Saving file as "%(file)s"...') % {"file" : saveAs}
+            print 'Saving file as "%(file)s"...' % {"file" : saveAs}
             down = fdownload(data.data[0], saveAs)
             down.start()
             progress = down.downloaded()
