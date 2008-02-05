@@ -102,7 +102,15 @@ class get_data(threading.Thread):
         self.url = url.replace("www.stage6.com", "stage6.divx.com").replace("stage6.com", "stage6.divx.com")
         self.data = [None, None, None, None]
     def run(self):
-        if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) == None: # if no stage6 video
+        if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) != None: # if stage6 video
+            matchMe = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/(.*)", self.url)
+            video_id = matchMe.group(2)
+            WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
+            VIDEO_FILENAME=re.sub("$", ".divx", matchMe.group(3)) # add .divx at the end
+            self.status = 0
+            self.data = [WANTEDLINK, video_id, VIDEO_FILENAME, False]
+
+        else:
             SITE="www.2video.de"
             FILENAME="/"
             params = urlencode({"dl" : self.url,
@@ -121,7 +129,6 @@ class get_data(threading.Thread):
             con2.request("GET", "/"+FILENAME)
             con2_data=con2.getresponse().read()
             mylines=con2_data.splitlines()
-            
 
             try:
                 LINKLINE_NR=lines.index([x for x in lines if 'target="_blank">Download von ' in x][0])
@@ -130,19 +137,12 @@ class get_data(threading.Thread):
                 WANTEDNAME=re.match('.*<title>(.*)</title>.*', mylines[WANTEDNAME_NR]).group(1)
                 print WANTEDNAME
 
-            except NameError:
+            except IndexError:
                 self.status = 1
             else:
                 VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
                 self.status = 0
                 self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
-        else: # if stage6 video
-            matchMe = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/(.*)", self.url)
-            video_id = matchMe.group(2)
-            WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
-            VIDEO_FILENAME=re.sub("$", ".divx", matchMe.group(3)) # add .divx at the end
-            self.status = 0
-            self.data = [WANTEDLINK, video_id, VIDEO_FILENAME, False]
 
 def folder_is_writable(dir):
     """
