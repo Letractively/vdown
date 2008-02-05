@@ -137,9 +137,10 @@ class get_data(threading.Thread):
                 self.status = 0
                 self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
         else: # if stage6 video
-            video_id = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/.*", self.url).group(2)
+            matchMe = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/(.*)", self.url)
+            video_id = matchMe.group(2)
             WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
-            VIDEO_FILENAME=re.sub("$", ".divx", video_id) # add .divx at the end
+            VIDEO_FILENAME=re.sub("$", ".divx", matchMe.group(3)) # add .divx at the end
             self.status = 0
             self.data = [WANTEDLINK, video_id, VIDEO_FILENAME, False]
 
