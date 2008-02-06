@@ -93,7 +93,7 @@ class convert(threading.Thread):
 
 class get_data(threading.Thread):
     """
-    Fetch data from nachrichtenmann.de/cgi-bin/video/video.cgi
+    Fetch information
     FIXME: make this a bit prettier
     """
     def __init__(self, url):
@@ -148,10 +148,7 @@ def folder_is_writable(dir):
     """
     Check if we can write into a folder (creates a testfile there)
     """
-    if os.path.isfile(os.path.join(dir, "vdown_test.testfile")): # do not delete the test file if it exists
-        EXISTS = True
-    else:
-        EXISTS = False
+    EXISTS=os.path.isfile(os.path.join(dir, "vdown_test.testfile")): # do not delete the test file if it exists
 
     try:
         file = open(os.path.join(dir, "vdown_test.testfile"), "wb")
