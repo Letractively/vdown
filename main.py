@@ -90,7 +90,6 @@ class convert(threading.Thread):
         output = subprocess.Popen(final_cmd, stdout=subprocess.PIPE).communicate()[0]
         self.status = 0
 
-
 class get_data(threading.Thread):
     """
     Fetch information
@@ -148,7 +147,7 @@ def folder_is_writable(dir):
     """
     Check if we can write into a folder (creates a testfile there)
     """
-    EXISTS=os.path.isfile(os.path.join(dir, "vdown_test.testfile")): # do not delete the test file if it exists
+    EXISTS=os.path.isfile(os.path.join(dir, "vdown_test.testfile")) # do not delete the test file if it exists
 
     try:
         file = open(os.path.join(dir, "vdown_test.testfile"), "wb")
