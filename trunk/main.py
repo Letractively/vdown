@@ -137,7 +137,7 @@ class get_data(threading.Thread):
                 WANTEDNAME=re.match('.*<title>(.*)</title>.*', mylines[WANTEDNAME_NR]).group(1)
                 print WANTEDNAME
 
-            except IndexError:
+            except:
                 self.status = 1
             else:
                 VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
@@ -227,3 +227,4 @@ if __name__ == "__main__":
             else:
                 print _("Could not fetch the wanted line. Wrong URL or unsupported video portal!")
             print "----"
+
