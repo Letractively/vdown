@@ -66,17 +66,19 @@ gtk.glade.textdomain(APP)
 class gui:
     def __init__(self):
         self.wTree = gtk.glade.XML(gladefile)
-        dic = {"closedSomehow" : self.closedSomehow,
-                "download_single" : self.download_single,
-                "menu_help_info_clicked" : self.menu_help_info_clicked,
-                "on_aboutdialog_delete" : self.on_aboutdialog_delete,
-                "menu_file_open_clicked" : self.menu_file_open_clicked,
-                "fc_open_file_clicked" : self.fc_open_clicked,
-                "fc_cancel_clicked" : self.fc_cancel_clicked,
-                "on_filechooserdialog_delete" : self.on_filechooserdialog_delete,
-                "menu_file_settings_clicked" : self.menu_file_settings_clicked,
-                "on_swindow_delete" : self.on_swindow_delete,
-                "swindow_close_clicked" : self.swindow_close_clicked}
+        dic = {
+               "closedSomehow" : self.closedSomehow,
+               "download_single" : self.download_single,
+               "menu_help_info_clicked" : self.menu_help_info_clicked,
+               "on_aboutdialog_delete" : self.on_aboutdialog_delete,
+               "menu_file_open_clicked" : self.menu_file_open_clicked,
+               "fc_open_file_clicked" : self.fc_open_clicked,
+               "fc_cancel_clicked" : self.fc_cancel_clicked,
+               "on_filechooserdialog_delete" : self.on_filechooserdialog_delete,
+               "menu_file_settings_clicked" : self.menu_file_settings_clicked,
+               "on_swindow_delete" : self.on_swindow_delete,
+               "swindow_close_clicked" : self.swindow_close_clicked
+              }
         self.wTree.signal_autoconnect(dic)
 
         self.config = configuration()
@@ -84,26 +86,57 @@ class gui:
 
         self.listdownloading = False
 
-        if not os.path.isdir(self.config.get("general", "save_videos_in")):
+        if not os.path.isdir(
+                             self.config.get(
+                                             "general",
+                                             "save_videos_in"
+                                            )
+                            ):
             try:
-                os.mkdir(self.config.get("general", "save_videos_in"))
+                os.mkdir(
+                         self.config.get(
+                                         "general",
+                                         "save_videos_in"
+                                        )
+                        )
             except OSError:
-                print _("Could not create the directory where the videos shall be saved in (specified in %(configfile)s)! Check permissions.") % {"configfile" : os.path.join(userhome, ".gvdownrc")}
+                print _("Could not create the directory where the videos shall be saved in (specified in %(configfile)s)! Check permissions.") % {"configfile" : os.path.join(
+                             userhome,
+                             ".gvdownrc"
+                            ) }
                 sys.exit(1)
-        if not folder_is_writable(self.config.get("general", "save_videos_in")):
+        if not folder_is_writable(
+                                  self.config.get(
+                                                  "general",
+                                                  "save_videos_in"
+                                                 )
+                                 ):
             print _("Cannot write to video output directoy! Check permissions or change the directory in %(configfile)s") % {"configfile" : os.path.join(userhome, ".gvdownrc")}
             sys.exit(1)
 
-    def closedSomehow(self, widget, event = None):
+    def closedSomehow(
+                      self,
+                      widget,
+                      event = None
+                     ):
         gtk.main_quit()
 
-    def download_single(self, widget, event = None):
+    def download_single(
+                        self,
+                        widget,
+                        event = None
+                       ):
         entry_url = self.wTree.get_widget("entry_url")
         pb = self.wTree.get_widget("dprogressbar")
         mainDownload_button = self.wTree.get_widget("mainDownload_button")
         mainClose_button = self.wTree.get_widget("mainClose_button")
         url = entry_url.get_text()
-        os.chdir(self.config.get("general", "save_videos_in"))
+        os.chdir(
+                 self.config.get(
+                                 "general",
+                                 "save_videos_in"
+                                )
+                )
         pb.set_fraction(0)
         pb.set_text(_("Fetching video information..."))
         if url == "":
@@ -121,9 +154,18 @@ class gui:
                 sleep(0.01)
             gtk.main_iteration_do(True)
             if data.status == 0:
-                saveAs = os.path.join(self.config.get("general", "save_videos_in"), data.data[2])
+                saveAs = os.path.join(
+                                      self.config.get(
+                                                      "general",
+                                                      "save_videos_in"
+                                                     ),
+                                      data.data[2]
+                                     )
                 print "Saving file as \"%(filename)s\"..." % {"filename" : saveAs}
-                down = fdownload(data.data[0], data.data[2])
+                down = fdownload(
+                                 data.data[0],
+                                 data.data[2]
+                                )
                 down.start()
                 pb.set_fraction(0)
                 pb.set_text(_("Downloading video..."))
@@ -142,16 +184,32 @@ class gui:
                 gtk.main_iteration_do(True)
                 pb.set_fraction(1)
                 pb.set_text(_("Download finished."))
-                if self.config.getboolean("general", "convert") and data.data[3]:
+                if self.config.getboolean(
+                                          "general",
+                                          "convert"
+                                         ) and data.data[3]:
                     pb.set_text(_("Converting file"))
-                    output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
+                    output = convert(
+                                     saveAs,
+                                     self.config.get(
+                                                     "general",
+                                                     "convert_filename_extension"
+                                                    ),
+                                     self.config.get(
+                                                     "general",
+                                                     "convertcmd"
+                                                    )
+                                    )
                     output.start()
                     while output.status == -1:
                         gtk.main_iteration_do(False)
                         sleep(0.01)
                     gtk.main_iteration_do(True)
                     pb.set_text(_("Converted file."))
-                    if self.config.getboolean("general", "delete_source_file_after_converting"):
+                    if self.config.getboolean(
+                                              "general",
+                                              "delete_source_file_after_converting"
+                                             ):
                         os.remove(saveAs)
                         print _("Deleted input (.flv) file")
             else:
@@ -162,33 +220,53 @@ class gui:
 
 ##
 
-    def menu_help_info_clicked(self, widget, event = None):
+    def menu_help_info_clicked(
+                               self,
+                               widget,
+                               event = None
+                              ):
         aboutdialog = self.wTree.get_widget("aboutdialog")
         aboutdialog.show()
 
-    def on_aboutdialog_delete(self, widget, event):
+    def on_aboutdialog_delete(
+                              self,
+                              widget,
+                              event
+                             ):
         aboutdialog = self.wTree.get_widget("aboutdialog")
         aboutdialog.hide()
         return True
 
 ##
 
-    def menu_file_open_clicked(self, widget):
+    def menu_file_open_clicked(
+                               self,
+                               widget
+                              ):
         fc = self.wTree.get_widget("filechooserdialog")
         fc.set_current_folder(userhome)
         fc.show()
 
-    def on_filechooserdialog_delete(self, widget, event):
-        print "fcdelete"
+    def on_filechooserdialog_delete(
+                                    self,
+                                    widget,
+                                    event
+                                   ):
         fc = self.wTree.get_widget("filechooserdialog")
         fc.hide()
         return True
 
-    def fc_cancel_clicked(self, widget): # Clicked on button 'cancel' in filechooserdialog
+    def fc_cancel_clicked(
+                          self,
+                          widget
+                         ): # Clicked on button 'cancel' in filechooserdialog
         fc = self.wTree.get_widget("filechooserdialog")
         fc.hide()
 
-    def fc_open_clicked(self, widget):
+    def fc_open_clicked(
+                        self,
+                        widget
+                       ):
         if self.listdownloading == False:
             self.download_list()
 
@@ -198,7 +276,12 @@ class gui:
         pb = self.wTree.get_widget("dprogressbar")
         mainDownload_button = self.wTree.get_widget("mainDownload_button")
         mainClose_button = self.wTree.get_widget("mainClose_button")
-        os.chdir(self.config.get("general", "save_videos_in"))
+        os.chdir(
+                 self.config.get(
+                                 "general",
+                                 "save_videos_in"
+                                )
+                )
         fc.hide()
         pb.set_fraction(0)
         chosen_list = fc.get_filename()
@@ -207,7 +290,10 @@ class gui:
         mainDownload_button.set_sensitive(False)
         mainClose_button.set_sensitive(False)
         pb.set_text(_("Downloading a list..."))
-        file = open(chosen_list, "r")
+        file = open(
+                    chosen_list,
+                    "r"
+                   )
         i = 0
         successful = 0 # videos downloaded successfully
         while True:
@@ -228,9 +314,18 @@ class gui:
                 sleep(0.01)
             gtk.main_iteration_do(True)
             if data.status == 0:
-                saveAs = os.path.join(self.config.get("general", "save_videos_in"), data.data[2])
+                saveAs = os.path.join(
+                                      self.config.get(
+                                                      "general",
+                                                      "save_videos_in"
+                                                     ),
+                                      data.data[2]
+                                     )
                 print _("Saving file as \"%(filename)s\"...") % {"filename" : saveAs}
-                down = fdownload(data.data[0], data.data[2])  # (http://*.*/*, *.flv)
+                down = fdownload(
+                                 data.data[0], # http://*.*/*
+                                 data.data[2]  # .flv
+                                )
                 down.start()
                 pb.set_text(_("Downloading video %(number)s") % {"number" : v_no})
                 progress = down.downloaded()/100
@@ -249,9 +344,22 @@ class gui:
                 pb.set_fraction(1)
                 pb.set_text(_("Finished download #%(number)s") % {"number" : v_no})
                 successful += 1
-                if self.config.getboolean("general", "convert") and data.data[3]:
+                if self.config.getboolean(
+                                          "general",
+                                          "convert"
+                                         ) and data.data[3]:
                     pb.set_text(_("Converting file"))
-                    output = convert(saveAs, self.config.get("general", "convert_filename_extension"), self.config.get("general", "convertcmd"))
+                    output = convert(
+                                     saveAs,
+                                     self.config.get(
+                                                     "general",
+                                                     "convert_filename_extension"
+                                                    ),
+                                     self.config.get(
+                                                     "general",
+                                                     "convertcmd"
+                                                    )
+                                    )
                     output.start()
                     while output.status == -1:
                         gtk.main_iteration_do(False)
@@ -274,7 +382,10 @@ class gui:
 
 ##
 
-    def menu_file_settings_clicked(self, widget):
+    def menu_file_settings_clicked(
+                                   self,
+                                   widget
+                                  ):
         swindow = self.wTree.get_widget("settingswindow")
         sfcb = self.wTree.get_widget("sfcb") # settings filechooser button
         convertbutton = self.wTree.get_widget("convertbutton")
@@ -283,19 +394,51 @@ class gui:
         deletesourcefilebutton = self.wTree.get_widget("deletesourcefilebutton")
         sfcb.set_local_only(True)
         sfcb.set_show_hidden(False)
-        sfcb.set_current_folder(self.config.get("general", "save_videos_in"))
-        convertbutton.set_active(self.config.getboolean("general", "convert"))
-        convertcmdentry.set_text(self.config.get("general", "convertcmd"))
-        fextension_entry.set_text(self.config.get("general", "convert_filename_extension"))
-        deletesourcefilebutton.set_active(self.config.getboolean("general", "delete_source_file_after_converting"))
+        sfcb.set_current_folder(
+                                self.config.get(
+                                                "general",
+                                                "save_videos_in"
+                                               )
+                               )
+        convertbutton.set_active(
+                                 self.config.getboolean(
+                                                        "general",
+                                                        "convert"
+                                                       )
+                                )
+        convertcmdentry.set_text(
+                                 self.config.get(
+                                                 "general",
+                                                 "convertcmd"
+                                                )
+                                )
+        fextension_entry.set_text(
+                                  self.config.get(
+                                                  "general",
+                                                  "convert_filename_extension"
+                                                 )
+                                 )
+        deletesourcefilebutton.set_active(
+                                          self.config.getboolean(
+                                                                 "general",
+                                                                 "delete_source_file_after_converting"
+                                                                )
+                                         )
         swindow.show()
 
-    def on_swindow_delete(self, widget, event):
+    def on_swindow_delete(
+                          self,
+                          widget,
+                          event
+                         ):
         swindow = self.wTree.get_widget("settingswindow")
         swindow.hide()
         return True
 
-    def swindow_close_clicked(self, widget):
+    def swindow_close_clicked(
+                              self,
+                              widget
+                             ):
         sfcb = self.wTree.get_widget("sfcb")
         swindow = self.wTree.get_widget("settingswindow")
         convertcmdentry = self.wTree.get_widget("convertcmdentry")
@@ -304,22 +447,50 @@ class gui:
         deletesourcefilebutton = self.wTree.get_widget("deletesourcefilebutton")
         outputdir = sfcb.get_filename()
         if convertbutton.get_active():
-            self.config.set("general", "convert", "yes")
+            self.config.set(
+                            "general",
+                            "convert",
+                            "yes"
+                           )
         else:
-            self.config.set("general", "convert", "no")
+            self.config.set(
+                            "general",
+                            "convert",
+                            "no"
+                           )
         convertcmd = convertcmdentry.get_text()
-        self.config.set("general", "convertcmd", convertcmd)
-        self.config.set("general", "convert_filename_extension", fextension_entry.get_text())
+        self.config.set(
+                        "general",
+                        "convertcmd",
+                        convertcmd
+                       )
+        self.config.set(
+                        "general",
+                        "convert_filename_extension",
+                        fextension_entry.get_text()
+                       )
         deletesourcefile = deletesourcefilebutton.get_active()
         if deletesourcefile:
-            self.config.set("general", "delete_source_file_after_converting", "yes")
+            self.config.set(
+                            "general",
+                            "delete_source_file_after_converting",
+                            "yes"
+                           )
         else:
-            self.config.set("general", "delete_source_file_after_converting", "no")
+            self.config.set(
+                            "general",
+                            "delete_source_file_after_converting",
+                            "no"
+                           )
         self.config.write_config()
         if not folder_is_writable(outputdir):
             print _("Cannot write to video output folder. Choose another.")
         else:
-            self.config.set("general", "save_videos_in", outputdir)
+            self.config.set(
+                            "general",
+                            "save_videos_in",
+                            outputdir
+                           )
             self.config.write_config()
             swindow.hide()
 
