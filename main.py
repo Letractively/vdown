@@ -32,6 +32,7 @@ import sys
 import httplib
 import re
 from urllib import urlencode
+from urlparse import urlparse
 import urllib2
 import threading
 import time
@@ -42,23 +43,42 @@ from user import home as userhome
 
 # <Tranlations stuff>
 
-gettext.install("gvdown", "po", unicode=True)
+gettext.install(
+                "gvdown",
+                "po",
+                unicode=True
+               )
 
 # </Translation stuff>
 
 class fdownload(threading.Thread): # not used in this file, but by the other interfaces
-    def __init__(self, url, file):
-        self.file = open(file,'wb')
+    def __init__(
+                 self,
+                 url,
+                 file
+                ):
+
+        self.file = open(
+                         file,
+                         'wb'
+                        )
         self.url = url
         threading.Thread.__init__(self)
         self.arived_len = 0
         self.content_len = 100
-        self.downloaded = lambda: 100.0*self.arived_len/int(self.content_len)
-        self.filesize=int(self.content_len)/1024 # in KB
+        self.downloaded = lambda: 100.0*self.arived_len/int(
+                                                            self.content_len
+                                                           )
+        self.filesize=int(
+                          self.content_len
+                         )/1024 # in KB
 
     def run(self):
         req = urllib2.Request(self.url)
-        req.add_header('User-Agent', '(g)vdown (http://vdown.googlecode.com)')
+        req.add_header(
+                       'User-Agent',
+                       '(g)vdown (http://vdown.googlecode.com)'
+                      )
         con = urllib2.urlopen(req)
         self.content_len = con.info()['Content-length']
         arived_len = 0
@@ -73,7 +93,12 @@ class convert(threading.Thread):
     """
     Convert video files with user-specified command
     """
-    def __init__(self, input, filename_extension, command):
+    def __init__(
+                 self,
+                 input,
+                 filename_extension,
+                 command
+                ):
         threading.Thread.__init__(self)
         self.status = -1
         self.input = input
@@ -83,80 +108,145 @@ class convert(threading.Thread):
         """
         Start converting
         """
-        self.output = re.sub(".flv$", self.filename_extension, self.input)
+        self.output = re.sub(
+                             ".flv$",
+                             self.filename_extension,
+                             self.input
+                            )
         final_cmd = []
         for i in self.command.split():
-            final_cmd.append(i.replace("%i", self.input).replace("%o", self.output))
-        output = subprocess.Popen(final_cmd, stdout=subprocess.PIPE).communicate()[0]
+            final_cmd.append(
+                             i.replace(
+                                       "%i",
+                                       self.input
+                                      ).replace(
+                                                "%o",
+                                                self.output
+                                               )
+                            )
+        output = subprocess.Popen(
+                                  final_cmd,
+                                  stdout=subprocess.PIPE
+                                 ).communicate()[0]
         self.status = 0
+
+def grep(
+         pattern,
+         context
+        ):
+    patternprog = re.compile(pattern)
+    for line in context:
+        a_match = patternprog.search(line)
+        if (a_match):
+            return line
 
 class get_data(threading.Thread):
     """
     Fetch information
-    FIXME: make this a bit prettier
     """
-    def __init__(self, url):
+    def __init__(
+                 self,
+                 url
+                ):
         threading.Thread.__init__(self)
         self.status = -1
-        self.url = url.replace("www.stage6.com", "stage6.divx.com").replace("stage6.com", "stage6.divx.com")
-        self.data = [None, None, None, None]
+        self.url = url
+        self.data = [
+                     None, # download link
+                     None, # title
+                     None, # filename
+                     None  # is this already converted? (e.g. as .avi)
+                    ]
+        self.regex = {
+                      "youtube" : "(http://)?(www.)?youtube.com/watch\?v=([A-Za-z0-9-_]*)(&.*|$)"
+                     }
     def run(self):
-        if re.match("(http://)?stage6.divx.com/.*/video/[0-9]*/.*", self.url) != None: # if stage6 video
-            matchMe = re.match("(http://)?stage6.divx.com/.*/video/([0-9]*)/(.*)", self.url)
-            video_id = matchMe.group(2)
-            WANTEDLINK="http://video.stage6.com/%s/.divx" % (video_id)
-            VIDEO_FILENAME=re.sub("$", ".divx", matchMe.group(3)) # add .divx at the end
-            self.status = 0
-            self.data = [WANTEDLINK, video_id, VIDEO_FILENAME, False]
-
-        else:
-            SITE="www.2video.de"
-            FILENAME="/"
-            params = urlencode({"dl" : self.url,
-                                "req" : "downloads",
-                                "action" : "download"})
-            headers = {"Content-type": "application/x-www-form-urlencoded",
-                        "Accept": "text/plain"}
-            con=httplib.HTTPConnection(SITE)
-            con.request("POST", FILENAME, params, headers)
-            con_info=con.getresponse()
-            con_data=con_info.read()
-            lines=con_data.splitlines()
-            SITE=re.match("(http://)?(.*)/(.*)", self.url).group(2)
-            FILENAME=re.match("(http://)?(.*)/(.*)", self.url).group(3)
-            con2=httplib.HTTPConnection(SITE)
-            con2.request("GET", "/"+FILENAME)
-            con2_data=con2.getresponse().read()
-            mylines=con2_data.splitlines()
-
-            try:
-                LINKLINE_NR=lines.index([x for x in lines if 'target="_blank">Download von ' in x][0])
-                WANTEDLINK=re.match('.*<a href="(.*)" target=.*', lines[LINKLINE_NR]).group(1)
-                WANTEDNAME_NR=mylines.index([x for x in mylines if '<title>' in x][0])
-                WANTEDNAME=re.match('.*<title>(.*)</title>.*', mylines[WANTEDNAME_NR]).group(1)
-                print WANTEDNAME
-
-            except:
-                self.status = 1
+        try: # now we can do everything we want and everything is catched by this (please don't kill me for that)
+            if re.match(
+                        self.regex["youtube"],
+                        self.url
+                       ) != None:
+                video_id = re.match(
+                                    self.regex["youtube"],
+                                    self.url
+                                   ).group(3)
+                SITE = urlparse(self.url)[1]
+                PATH = urlparse(self.url)[2]+"?"+urlparse(self.url)[4]
+                con = httplib.HTTPConnection(SITE)
+                con.request(
+                            "GET",
+                            PATH
+                           )
+                resp = con.getresponse()
+                lines = resp.read().split("\n")
+                data_line = grep(
+                                 "var swfArgs = ",
+                                 lines
+                                )
+                if not data_line:
+                    raise RuntimeError
+                verification_code = re.match(
+                                             '.*"t": "([^"]*)",.*',
+                                             data_line
+                                            ).group(1)
+                title_line = grep(
+                                  "<title>.*</title>",
+                                  lines
+                                 )
+                pattern = re.compile("<title>.*</title>")
+                if not title_line:
+                    raise RuntimeError
+                TITLE=re.match(
+                               ".*<title>YouTube - (.*)</title>.*",
+                               title_line
+                              ).group(1)
+                DOWNLOADLINK = "http://youtube.com/get_video?video_id="+video_id+"&t="+verification_code
+                FILENAME = TITLE+".flv"
+                self.data = [
+                             DOWNLOADLINK,
+                             TITLE,
+                             FILENAME,
+                             True
+                            ]
+            
             else:
-                VIDEO_FILENAME=re.sub("(?i).flv.flv", ".flv", WANTEDNAME+".flv")
-                self.status = 0
-                self.data = [WANTEDLINK, WANTEDNAME, VIDEO_FILENAME, True]
+                raise RuntimeError
+
+        except: # if any error appeared in the code above, the video information could not be fetched successfully
+            self.status = 1
+        else:
+            self.status = 0
 
 def folder_is_writable(dir):
     """
     Check if we can write into a folder (creates a testfile there)
     """
-    EXISTS=os.path.isfile(os.path.join(dir, "vdown_test.testfile")) # do not delete the test file if it exists
+    EXISTS = os.path.isfile( # do not delete the test file if it exists
+                            os.path.join(
+                                         dir,
+                                         "vdown_test.testfile"
+                                        )
+                           )
 
     try:
-        file = open(os.path.join(dir, "vdown_test.testfile"), "wb")
+        file = open(
+                    os.path.join(
+                                 dir,
+                                 "vdown_test.testfile"
+                                ),
+                    "wb"
+                   )
         file.close()
     except IOError:
         return False
     else:
         if not EXISTS:
-            os.remove(os.path.join(dir, "vdown_test.testfile"))
+            os.remove(
+                      os.path.join(
+                                   dir,
+                                   "vdown_test.testfile"
+                                  )
+                     )
         return True
 
 class configuration(ConfigParser.RawConfigParser):
@@ -165,7 +255,10 @@ class configuration(ConfigParser.RawConfigParser):
     """
     def __init__(self):
         ConfigParser.RawConfigParser.__init__(self)
-        self.configfilename = os.path.join(userhome, ".gvdownrc")
+        self.configfilename = os.path.join(
+                                           userhome,
+                                           ".gvdownrc"
+                                          )
         if not os.path.isfile(self.configfilename):
             print _("Config file %s not found. Creating one for you..." % (self.configfilename))
             self.set_defaults()
@@ -173,15 +266,35 @@ class configuration(ConfigParser.RawConfigParser):
 
     def readconfig(self):
         """
+        Read config file and check for errors.
         If an error occurs while reading the settings (e.g. ConfigParser.NoSectionError), all settings will be set to default.
         """
-        self.readfp(open(self.configfilename))
+        self.readfp(
+                    open(
+                         self.configfilename
+                        )
+                   )
         try:
-            test = self.get("general", "save_videos_in")
-            test = self.getboolean("general", "convert")
-            test = self.get("general", "convertcmd")
-            test = self.get("general", "convert_filename_extension")
-            test = self.getboolean("general", "delete_source_file_after_converting")
+            test = self.get(
+                            "general",
+                            "save_videos_in"
+                           )
+            test = self.getboolean(
+                                   "general",
+                                   "convert"
+                                  )
+            test = self.get(
+                            "general",
+                            "convertcmd"
+                           )
+            test = self.get(
+                            "general",
+                            "convert_filename_extension"
+                           )
+            test = self.getboolean(
+                                   "general",
+                                   "delete_source_file_after_converting"
+                                  )
         except:
             self.set_defaults()
             self.write_config()
@@ -193,17 +306,44 @@ class configuration(ConfigParser.RawConfigParser):
         print _("Setting settings to default...")
         if not self.has_section("general"):
             self.add_section("general")
-        self.set("general", "save_videos_in", os.path.join(userhome, "downloads"))
-        self.set("general", "convert", "no")
-        self.set("general", "convertcmd", "ffmpeg -i %i -acodec mp3 %o")
-        self.set("general", "convert_filename_extension", ".avi")
-        self.set("general", "delete_source_file_after_converting", "no")
+
+        self.set(
+                 "general",
+                 "save_videos_in",
+                 os.path.join(
+                              userhome,
+                              "downloads"
+                             )
+                )
+        self.set(
+                 "general",
+                 "convert",
+                 "no"
+                )
+        self.set(
+                 "general",
+                 "convertcmd",
+                 "ffmpeg -i %i -acodec mp3 -ab 128 %o"
+                )
+        self.set(
+                 "general",
+                 "convert_filename_extension",
+                 ".mp3"
+                )
+        self.set(
+                 "general",
+                 "delete_source_file_after_converting",
+                 "no"
+                )
 
     def write_config(self):
         """
         Write config file
         """
-        f = file(self.configfilename, "w")
+        f = file(
+                 self.configfilename,
+                 "w"
+                )
         self.write(f)
         f.close()
 
@@ -223,4 +363,3 @@ if __name__ == "__main__":
             else:
                 print _("Could not fetch the wanted line. Wrong URL or unsupported video portal!")
             print "----"
-
