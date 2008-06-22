@@ -504,5 +504,5 @@ if __name__ == "__main__":
         print _("Could not open %(gladefile)s") % {"gladefile" : gladefile}
         sys.exit(1)
 
-app = gui()
-gtk.main()
+    app = gui()
+    gtk.main()
